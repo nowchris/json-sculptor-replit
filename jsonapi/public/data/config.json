@@ -1,0 +1,23 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 3000,
+    "ssl": true
+  },
+  "database": {
+    "connection": "mongodb://localhost:27017",
+    "name": "myapp_db",
+    "options": {
+      "maxPoolSize": 10
+    }
+  },
+  "features": {
+    "authentication": true,
+    "logging": {
+      "level": "info",
+      "file": "app.log"
+    },
+    "caching": false,
+    "api_version": "v2"
+  }
+}
