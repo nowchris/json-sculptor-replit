@@ -237,14 +237,14 @@ export default function JsonBlock({
                         if (typeof item === "object" && item !== null) {
                           // Look for common name fields in order of preference
                           const nameFields = [
-                            "name",
-                            "Name", 
-                            "title",
+                            "Name",
+                            "name", 
                             "Title",
+                            "title",
                             "username",
                             "email",
-                            "id",
                             "key",
+                            "id",
                           ];
                           for (const field of nameFields) {
                             if (

@@ -40,18 +40,27 @@ export default function RawEditor({
       <div className="relative flex">
         {/* Line numbers */}
         <div 
-          className="flex-shrink-0 p-4 pr-2 bg-slate-100 border-r border-slate-200 text-right overflow-hidden"
-          style={{ height: compact ? '12rem' : '24rem' }}
+          className="flex-shrink-0 bg-slate-100 border-r border-slate-200 text-right overflow-hidden"
+          style={{ 
+            height: compact ? '12rem' : '24rem',
+            paddingTop: '16px',
+            paddingBottom: '16px',
+            paddingLeft: '8px',
+            paddingRight: '8px'
+          }}
         >
           <div 
-            className="font-mono text-xs text-slate-500 leading-6"
+            className="font-mono text-xs text-slate-500"
             style={{
               transform: `translateY(-${scrollTop}px)`,
-              transition: 'none'
+              transition: 'none',
+              lineHeight: '1.5rem' // Match textarea line height
             }}
           >
             {content.split('\n').map((_, index) => (
-              <div key={index}>{index + 1}</div>
+              <div key={index} style={{ height: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                {index + 1}
+              </div>
             ))}
           </div>
         </div>
@@ -62,11 +71,14 @@ export default function RawEditor({
           value={content}
           onChange={(e) => onChange(e.target.value)}
           onScroll={handleScroll}
-          className={`flex-1 font-mono text-sm border-0 resize-none focus:ring-0 focus:outline-none bg-slate-50 leading-6 ${
+          className={`flex-1 font-mono text-sm border-0 resize-none focus:ring-0 focus:outline-none bg-slate-50 ${
             compact ? "h-48" : "h-96"
           }`}
+          style={{ 
+            lineHeight: '1.5rem',
+            padding: '16px 12px'
+          }}
           placeholder="Enter JSON content here..."
-          style={{ paddingLeft: '12px' }}
         />
       </div>
 
