@@ -14,7 +14,12 @@ interface JsonBlockProps {
   onDelete: () => void;
 }
 
-export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlockProps) {
+export default function JsonBlock({
+  name,
+  value,
+  onChange,
+  onDelete,
+}: JsonBlockProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isRawMode, setIsRawMode] = useState(false);
   const [rawContent, setRawContent] = useState(JSON.stringify(value, null, 2));
@@ -28,12 +33,18 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case "Object": return "bg-blue-100 text-blue-600";
-      case "Array": return "bg-green-100 text-green-600";
-      case "string": return "bg-purple-100 text-purple-600";
-      case "number": return "bg-orange-100 text-orange-600";
-      case "boolean": return "bg-pink-100 text-pink-600";
-      default: return "bg-slate-100 text-slate-600";
+      case "Object":
+        return "bg-blue-100 text-blue-600";
+      case "Array":
+        return "bg-green-100 text-green-600";
+      case "string":
+        return "bg-purple-100 text-purple-600";
+      case "number":
+        return "bg-orange-100 text-orange-600";
+      case "boolean":
+        return "bg-pink-100 text-pink-600";
+      default:
+        return "bg-slate-100 text-slate-600";
     }
   };
 
@@ -73,7 +84,7 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
 
   const handleRawSave = () => {
     const validation = validate(rawContent);
-    
+
     if (validation.valid) {
       try {
         const parsed = JSON.parse(rawContent);
@@ -101,11 +112,12 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h3 className="font-semibold text-slate-900">{name}</h3>
-            <Badge className={getTypeColor(valueType)}>
-              {valueType}
-            </Badge>
+            <Badge className={getTypeColor(valueType)}>{valueType}</Badge>
             {isRawMode && (
-              <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-200">
+              <Badge
+                variant="outline"
+                className="bg-amber-50 text-amber-600 border-amber-200"
+              >
                 Raw Edit Mode
               </Badge>
             )}
@@ -184,11 +196,14 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
               {Array.isArray(value) ? (
                 <>
                   {/* Check if this is a simple array (strings, numbers, booleans) */}
-                  {value.every(item => typeof item !== "object" || item === null) ? (
+                  {value.every(
+                    (item) => typeof item !== "object" || item === null,
+                  ) ? (
                     /* Simple array - render as list without indices */
                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
                       <div className="text-sm text-slate-600 mb-3">
-                        Array with {value.length} item{value.length !== 1 ? 's' : ''}
+                        Array with {value.length} item
+                        {value.length !== 1 ? "s" : ""}
                       </div>
                       <div className="space-y-2">
                         {value.map((item, index) => (
@@ -221,26 +236,39 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
                         let displayName = `[${index}]`;
                         if (typeof item === "object" && item !== null) {
                           // Look for common name fields in order of preference
-                          const nameFields = ['name', 'title', 'username', 'email', 'id', 'key'];
+                          const nameFields = [
+                            "name",
+                            "Name",
+                            "title",
+                            "username",
+                            "email",
+                            "id",
+                            "key",
+                          ];
                           for (const field of nameFields) {
-                            if (item[field] !== undefined && item[field] !== null) {
+                            if (
+                              item[field] !== undefined &&
+                              item[field] !== null
+                            ) {
                               displayName = `${item[field]}`;
                               break;
                             }
                           }
                         }
-                        
+
                         return (
                           <JsonBlock
                             key={index}
                             name={displayName}
                             value={item}
-                            onChange={(newValue) => handleFieldChange(index.toString(), newValue)}
+                            onChange={(newValue) =>
+                              handleFieldChange(index.toString(), newValue)
+                            }
                             onDelete={() => handleFieldDelete(index.toString())}
                           />
                         );
                       })}
-                      
+
                       <Button
                         variant="outline"
                         size="sm"
@@ -270,7 +298,7 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
                     }
                     return null;
                   })}
-                  
+
                   {/* Add Field button after simple fields */}
                   <Button
                     variant="outline"
@@ -281,7 +309,7 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
                     <Plus className="h-4 w-4 mr-2" />
                     Add Field
                   </Button>
-                  
+
                   {/* Then render complex nested objects */}
                   {Object.entries(value).map(([key, fieldValue]) => {
                     if (typeof fieldValue === "object" && fieldValue !== null) {
@@ -290,7 +318,9 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
                           key={key}
                           name={key}
                           value={fieldValue}
-                          onChange={(newValue) => handleFieldChange(key, newValue)}
+                          onChange={(newValue) =>
+                            handleFieldChange(key, newValue)
+                          }
                           onDelete={() => handleFieldDelete(key)}
                         />
                       );

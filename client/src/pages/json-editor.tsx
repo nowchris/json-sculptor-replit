@@ -242,24 +242,85 @@ export default function JsonEditor() {
                 />
               ) : (
                 <div className="space-y-6">
+                  {/* Location Link */}
+                  {jsonContent?.Location && (
+                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <span className="text-sm text-blue-800 font-medium">Live page: </span>
+                      <a
+                        href={jsonContent.Location}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline text-sm"
+                      >
+                        {jsonContent.Location}
+                      </a>
+                    </div>
+                  )}
+
                   {jsonContent && jsonContent !== null ? (
                     typeof jsonContent === "object" && !Array.isArray(jsonContent) ? (
-                      Object.entries(jsonContent).map(([key, value]) => (
-                        <JsonBlock
-                          key={key}
-                          name={key}
-                          value={value}
-                          onChange={(newValue) => {
-                            const newContent = { ...jsonContent, [key]: newValue };
-                            handleJsonChange(newContent);
-                          }}
-                          onDelete={() => {
-                            const newContent = { ...jsonContent };
-                            delete newContent[key];
-                            handleJsonChange(newContent);
-                          }}
-                        />
-                      ))
+                      // Handle Content object specially - render its contents directly if it exists
+                      jsonContent.Content ? (
+                        // Render all fields of Content object directly, plus any sibling fields
+                        <>
+                          {Object.entries(jsonContent).filter(([key]) => key !== 'Content').map(([key, value]) => (
+                            <JsonBlock
+                              key={key}
+                              name={key}
+                              value={value}
+                              onChange={(newValue) => {
+                                const newContent = { ...jsonContent, [key]: newValue };
+                                handleJsonChange(newContent);
+                              }}
+                              onDelete={() => {
+                                const newContent = { ...jsonContent };
+                                delete newContent[key];
+                                handleJsonChange(newContent);
+                              }}
+                            />
+                          ))}
+                          {Object.entries(jsonContent.Content).map(([key, value]) => (
+                            <JsonBlock
+                              key={`content-${key}`}
+                              name={key}
+                              value={value}
+                              onChange={(newValue) => {
+                                const newContent = {
+                                  ...jsonContent,
+                                  Content: { ...jsonContent.Content, [key]: newValue }
+                                };
+                                handleJsonChange(newContent);
+                              }}
+                              onDelete={() => {
+                                const newContent = {
+                                  ...jsonContent,
+                                  Content: { ...jsonContent.Content }
+                                };
+                                delete newContent.Content[key];
+                                handleJsonChange(newContent);
+                              }}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        // Normal object rendering
+                        Object.entries(jsonContent).map(([key, value]) => (
+                          <JsonBlock
+                            key={key}
+                            name={key}
+                            value={value}
+                            onChange={(newValue) => {
+                              const newContent = { ...jsonContent, [key]: newValue };
+                              handleJsonChange(newContent);
+                            }}
+                            onDelete={() => {
+                              const newContent = { ...jsonContent };
+                              delete newContent[key];
+                              handleJsonChange(newContent);
+                            }}
+                          />
+                        ))
+                      )
                     ) : Array.isArray(jsonContent) ? (
                       <JsonBlock
                         key="root"

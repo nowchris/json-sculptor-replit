@@ -45,6 +45,20 @@ export default function FileSidebar({
     return `Modified ${Math.floor(diffInHours / 24)} days ago`;
   };
 
+  const getDisplayName = (file: any) => {
+    // Try to extract JSONTitle from the file content if available
+    if (file.content) {
+      try {
+        const content = typeof file.content === 'string' ? JSON.parse(file.content) : file.content;
+        if (content.JSONTitle) return content.JSONTitle;
+        if (content.Content?.JSONTitle) return content.Content.JSONTitle;
+      } catch {
+        // If JSON parsing fails, fall back to filename
+      }
+    }
+    return file.name;
+  };
+
   return (
     <div className="w-80 bg-white border-r border-slate-200 flex flex-col h-screen overflow-hidden">
       {/* Header */}
@@ -107,7 +121,7 @@ export default function FileSidebar({
                           : "text-slate-700"
                       }`}
                     >
-                      {file.name}
+                      {getDisplayName(file)}
                     </div>
                     <div className="text-xs text-slate-500">
                       {formatLastModified(file.lastModified)}
