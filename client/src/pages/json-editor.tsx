@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { apiRequest } from "@/lib/queryClient";
@@ -75,7 +75,7 @@ export default function JsonEditor() {
   });
 
   // Initialize content when file loads
-  useState(() => {
+  useEffect(() => {
     if (fileContent) {
       setJsonContent(fileContent.content);
       setRawContent(fileContent.raw);
@@ -229,26 +229,43 @@ export default function JsonEditor() {
                 />
               ) : (
                 <div className="space-y-6">
-                  {jsonContent && typeof jsonContent === "object" ? (
-                    Object.entries(jsonContent).map(([key, value]) => (
+                  {jsonContent && jsonContent !== null ? (
+                    typeof jsonContent === "object" && !Array.isArray(jsonContent) ? (
+                      Object.entries(jsonContent).map(([key, value]) => (
+                        <JsonBlock
+                          key={key}
+                          name={key}
+                          value={value}
+                          onChange={(newValue) => {
+                            const newContent = { ...jsonContent, [key]: newValue };
+                            handleJsonChange(newContent);
+                          }}
+                          onDelete={() => {
+                            const newContent = { ...jsonContent };
+                            delete newContent[key];
+                            handleJsonChange(newContent);
+                          }}
+                        />
+                      ))
+                    ) : Array.isArray(jsonContent) ? (
                       <JsonBlock
-                        key={key}
-                        name={key}
-                        value={value}
-                        onChange={(newValue) => {
-                          const newContent = { ...jsonContent, [key]: newValue };
-                          handleJsonChange(newContent);
-                        }}
-                        onDelete={() => {
-                          const newContent = { ...jsonContent };
-                          delete newContent[key];
-                          handleJsonChange(newContent);
-                        }}
+                        key="root"
+                        name="Root Array"
+                        value={jsonContent}
+                        onChange={handleJsonChange}
+                        onDelete={() => handleJsonChange([])}
                       />
-                    ))
+                    ) : (
+                      <div className="p-6 bg-slate-50 rounded-lg border border-slate-200">
+                        <h3 className="font-medium text-slate-900 mb-2">Primitive Value</h3>
+                        <div className="font-mono text-sm p-4 bg-white rounded border">
+                          {JSON.stringify(jsonContent)}
+                        </div>
+                      </div>
+                    )
                   ) : (
                     <div className="text-center py-12 text-slate-500">
-                      Invalid JSON structure for visual editing
+                      No content to display
                     </div>
                   )}
                 </div>
