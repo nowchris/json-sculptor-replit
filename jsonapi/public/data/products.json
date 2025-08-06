@@ -1,0 +1,55 @@
+{
+  "products": [
+    {
+      "id": 101,
+      "name": "Wireless Headphones",
+      "category": "Electronics",
+      "price": 99.99,
+      "inStock": true,
+      "specifications": {
+        "brand": "TechBrand",
+        "model": "WH-2024",
+        "color": "Black",
+        "battery": "30 hours",
+        "wireless": true,
+        "features": ["Noise Cancelling", "Quick Charge", "Bluetooth 5.0"]
+      },
+      "reviews": {
+        "average": 4.5,
+        "total": 128
+      }
+    },
+    {
+      "id": 102,
+      "name": "Gaming Mouse",
+      "category": "Electronics",
+      "price": 49.99,
+      "inStock": false,
+      "specifications": {
+        "brand": "GamePro",
+        "model": "GM-Elite",
+        "color": "RGB",
+        "dpi": 16000,
+        "wireless": false,
+        "features": ["Programmable Buttons", "RGB Lighting", "High Precision"]
+      },
+      "reviews": {
+        "average": 4.2,
+        "total": 89
+      }
+    }
+  ],
+  "categories": ["Electronics", "Gaming", "Accessories"],
+  "metadata": {
+    "lastUpdated": "2024-08-06T19:30:00Z",
+    "totalProducts": 2,
+    "store": {
+      "name": "TechStore",
+      "location": "Online",
+      "contact": {
+        "email": "support@techstore.com",
+        "phone": "+1-555-0123"
+      }
+    }
+  }
+}

@@ -48,6 +48,33 @@ export default function JsonField({
   };
 
   const renderValueInput = () => {
+    // Handle nested objects and arrays differently
+    if (typeof value === "object" && value !== null) {
+      if (Array.isArray(value)) {
+        return (
+          <div className="col-span-2 p-3 bg-slate-50 border rounded-md">
+            <div className="text-sm text-slate-600 mb-2">
+              Array with {value.length} item{value.length !== 1 ? 's' : ''}
+            </div>
+            <div className="text-xs font-mono text-slate-500 max-h-20 overflow-y-auto">
+              {JSON.stringify(value, null, 2)}
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div className="col-span-2 p-3 bg-slate-50 border rounded-md">
+            <div className="text-sm text-slate-600 mb-2">
+              Object with {Object.keys(value).length} field{Object.keys(value).length !== 1 ? 's' : ''}
+            </div>
+            <div className="text-xs font-mono text-slate-500 max-h-20 overflow-y-auto">
+              {JSON.stringify(value, null, 2)}
+            </div>
+          </div>
+        );
+      }
+    }
+
     const inputType = getInputType(value);
 
     switch (inputType) {

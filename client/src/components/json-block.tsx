@@ -182,26 +182,58 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
           ) : canEdit ? (
             <div className="space-y-4">
               {Array.isArray(value) ? (
-                value.map((item, index) => (
-                  <JsonField
-                    key={index}
-                    fieldKey={index.toString()}
-                    value={item}
-                    onChange={handleFieldChange}
-                    onDelete={handleFieldDelete}
-                    isArrayItem
-                  />
-                ))
+                value.map((item, index) => {
+                  // For complex array items (objects), render as nested blocks
+                  if (typeof item === "object" && item !== null) {
+                    return (
+                      <JsonBlock
+                        key={index}
+                        name={`[${index}]`}
+                        value={item}
+                        onChange={(newValue) => handleFieldChange(index.toString(), newValue)}
+                        onDelete={() => handleFieldDelete(index.toString())}
+                      />
+                    );
+                  } else {
+                    // Simple values can use JsonField
+                    return (
+                      <JsonField
+                        key={index}
+                        fieldKey={index.toString()}
+                        value={item}
+                        onChange={handleFieldChange}
+                        onDelete={handleFieldDelete}
+                        isArrayItem
+                      />
+                    );
+                  }
+                })
               ) : (
-                Object.entries(value).map(([key, fieldValue]) => (
-                  <JsonField
-                    key={key}
-                    fieldKey={key}
-                    value={fieldValue}
-                    onChange={handleFieldChange}
-                    onDelete={handleFieldDelete}
-                  />
-                ))
+                Object.entries(value).map(([key, fieldValue]) => {
+                  // For complex object properties, render as nested blocks
+                  if (typeof fieldValue === "object" && fieldValue !== null) {
+                    return (
+                      <JsonBlock
+                        key={key}
+                        name={key}
+                        value={fieldValue}
+                        onChange={(newValue) => handleFieldChange(key, newValue)}
+                        onDelete={() => handleFieldDelete(key)}
+                      />
+                    );
+                  } else {
+                    // Simple values can use JsonField
+                    return (
+                      <JsonField
+                        key={key}
+                        fieldKey={key}
+                        value={fieldValue}
+                        onChange={handleFieldChange}
+                        onDelete={handleFieldDelete}
+                      />
+                    );
+                  }
+                })
               )}
               
               <Button

@@ -141,7 +141,7 @@ export default function JsonEditor() {
   return (
     <div className="min-h-screen flex bg-slate-50">
       <FileSidebar
-        files={filesData?.files || []}
+        files={(filesData as any)?.files || []}
         selectedFile={selectedFile}
         onFileSelect={handleFileSelect}
         onSave={handleSave}
