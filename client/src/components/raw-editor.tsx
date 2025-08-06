@@ -1,6 +1,7 @@
 import { CheckCircle, XCircle } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { useRef, useState } from "react";
 
 interface RawEditorProps {
   content: string;
@@ -15,8 +16,15 @@ export default function RawEditor({
   validationError,
   compact = false,
 }: RawEditorProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [scrollTop, setScrollTop] = useState(0);
+  
   const lineCount = content.split("\n").length;
   const charCount = content.length;
+
+  const handleScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
+    setScrollTop(e.currentTarget.scrollTop);
+  };
 
   return (
     <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
@@ -31,8 +39,17 @@ export default function RawEditor({
 
       <div className="relative flex">
         {/* Line numbers */}
-        <div className="flex-shrink-0 p-4 pr-2 bg-slate-100 border-r border-slate-200 text-right">
-          <div className="font-mono text-xs text-slate-500 leading-6">
+        <div 
+          className="flex-shrink-0 p-4 pr-2 bg-slate-100 border-r border-slate-200 text-right overflow-hidden"
+          style={{ height: compact ? '12rem' : '24rem' }}
+        >
+          <div 
+            className="font-mono text-xs text-slate-500 leading-6"
+            style={{
+              transform: `translateY(-${scrollTop}px)`,
+              transition: 'none'
+            }}
+          >
             {content.split('\n').map((_, index) => (
               <div key={index}>{index + 1}</div>
             ))}
@@ -41,8 +58,10 @@ export default function RawEditor({
         
         {/* Text area */}
         <Textarea
+          ref={textareaRef}
           value={content}
           onChange={(e) => onChange(e.target.value)}
+          onScroll={handleScroll}
           className={`flex-1 font-mono text-sm border-0 resize-none focus:ring-0 focus:outline-none bg-slate-50 leading-6 ${
             compact ? "h-48" : "h-96"
           }`}
