@@ -235,7 +235,7 @@ export default function JsonBlock({
                         // Try to find a suitable display name for the object
                         let displayName = `[${index}]`;
                         if (typeof item === "object" && item !== null) {
-                          // Look for common name fields in order of preference
+                          // Look for common name fields in order of preference, prioritizing name fields over IDs
                           const nameFields = [
                             "Name",
                             "name", 
@@ -243,18 +243,24 @@ export default function JsonBlock({
                             "title",
                             "username",
                             "email",
-                            "key",
-                            "id",
+                            "label",
+                            "displayName",
+                            "key"
                           ];
                           for (const field of nameFields) {
                             if (
                               item[field] !== undefined &&
                               item[field] !== null &&
-                              item[field] !== ""
+                              item[field] !== "" &&
+                              typeof item[field] === "string"
                             ) {
                               displayName = `${item[field]}`;
                               break;
                             }
+                          }
+                          // Only use ID as last resort if no name field found
+                          if (displayName === `[${index}]` && item.id !== undefined) {
+                            displayName = `ID: ${item.id}`;
                           }
                         }
 
