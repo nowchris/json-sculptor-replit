@@ -238,8 +238,9 @@ export default function JsonBlock({
                           // Look for common name fields in order of preference
                           const nameFields = [
                             "name",
-                            "Name",
+                            "Name", 
                             "title",
+                            "Title",
                             "username",
                             "email",
                             "id",
@@ -248,7 +249,8 @@ export default function JsonBlock({
                           for (const field of nameFields) {
                             if (
                               item[field] !== undefined &&
-                              item[field] !== null
+                              item[field] !== null &&
+                              item[field] !== ""
                             ) {
                               displayName = `${item[field]}`;
                               break;

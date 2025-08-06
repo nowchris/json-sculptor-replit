@@ -46,17 +46,8 @@ export default function FileSidebar({
   };
 
   const getDisplayName = (file: any) => {
-    // Try to extract JSONTitle from the file content if available
-    if (file.content) {
-      try {
-        const content = typeof file.content === 'string' ? JSON.parse(file.content) : file.content;
-        if (content.JSONTitle) return content.JSONTitle;
-        if (content.Content?.JSONTitle) return content.Content.JSONTitle;
-      } catch {
-        // If JSON parsing fails, fall back to filename
-      }
-    }
-    return file.name;
+    // Use displayName if available from server, otherwise fallback to filename
+    return file.displayName || file.name;
   };
 
   return (

@@ -8,7 +8,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/files", async (req, res) => {
     try {
       const files = await storage.listJsonFiles();
-      res.json({ files });
+      // Enhanced file listing with JSONTitle extraction
+      const filesWithTitles = await Promise.all(files.map(async (file) => {
+        try {
+          const fileContent = await storage.loadJsonFile(file.name);
+          const content = fileContent.content;
+          if (content.JSONTitle) {
+            return { ...file, displayName: content.JSONTitle };
+          }
+          if (content.Content?.JSONTitle) {
+            return { ...file, displayName: content.Content.JSONTitle };
+          }
+        } catch {
+          // If we can't read the file, skip title extraction
+        }
+        return { ...file, displayName: file.name };
+      }));
+      res.json({ files: filesWithTitles });
     } catch (error) {
       res.status(500).json({ 
         message: error instanceof Error ? error.message : "Failed to list files" 
