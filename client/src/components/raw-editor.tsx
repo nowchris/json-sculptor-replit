@@ -48,10 +48,7 @@ export default function RawEditor({
               <span className="text-red-600">{validationError}</span>
             </>
           ) : (
-            <>
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <span className="text-slate-600">Valid JSON syntax</span>
-            </>
+            <span className="text-slate-600">JSON Editor - Save to validate</span>
           )}
         </div>
         <div className="text-xs text-slate-500">

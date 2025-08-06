@@ -102,28 +102,40 @@ export default function JsonEditor() {
   const handleRawChange = (newRaw: string) => {
     setRawContent(newRaw);
     setHasUnsavedChanges(true);
-    
-    // Validate JSON
-    validateMutation.mutate(newRaw, {
-      onSuccess: (validation) => {
-        if (validation.valid) {
-          try {
-            const parsed = JSON.parse(newRaw);
-            setJsonContent(parsed);
-            setValidationError(null);
-          } catch {
-            // Should not happen if validation passed
-          }
-        } else {
-          setValidationError(validation.error || "Invalid JSON");
-        }
-      },
-    });
+    // Clear any existing validation error when user starts typing
+    setValidationError(null);
   };
 
   const handleSave = () => {
     const contentToSave = isRawMode ? rawContent : JSON.stringify(jsonContent, null, 2);
-    saveMutation.mutate(contentToSave);
+    
+    // If in raw mode, validate the JSON before saving
+    if (isRawMode) {
+      validateMutation.mutate(contentToSave, {
+        onSuccess: (validation) => {
+          if (validation.valid) {
+            try {
+              const parsed = JSON.parse(contentToSave);
+              setJsonContent(parsed);
+              setValidationError(null);
+              saveMutation.mutate(contentToSave);
+            } catch {
+              setValidationError("Failed to parse JSON");
+            }
+          } else {
+            setValidationError(validation.error || "Invalid JSON");
+            toast({
+              title: "Cannot save file",
+              description: "Please fix JSON validation errors first",
+              variant: "destructive",
+            });
+          }
+        },
+      });
+    } else {
+      // Visual mode - content is already valid
+      saveMutation.mutate(contentToSave);
+    }
   };
 
   const toggleMode = (mode: "visual" | "raw") => {

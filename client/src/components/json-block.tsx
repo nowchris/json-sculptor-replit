@@ -69,26 +69,26 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
 
   const handleRawChange = (newRaw: string) => {
     setRawContent(newRaw);
-    const validation = validate(newRaw);
+  };
+
+  const handleRawSave = () => {
+    const validation = validate(rawContent);
     
     if (validation.valid) {
       try {
-        const parsed = JSON.parse(newRaw);
+        const parsed = JSON.parse(rawContent);
         onChange(parsed);
+        setIsRawMode(false);
       } catch {
         // Should not happen if validation passed
       }
     }
   };
 
-  const handleRawSave = () => {
-    if (!validationError) {
-      setIsRawMode(false);
-    }
-  };
-
   const handleRawCancel = () => {
     setRawContent(JSON.stringify(value, null, 2));
+    // Clear any validation errors when canceling
+    const validation = validate(JSON.stringify(value, null, 2));
     setIsRawMode(false);
   };
 
