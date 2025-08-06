@@ -193,7 +193,6 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
                       <div className="space-y-2">
                         {value.map((item, index) => (
                           <div key={index} className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-slate-400 rounded-full flex-shrink-0"></div>
                             <JsonField
                               fieldKey={index.toString()}
                               value={item}
