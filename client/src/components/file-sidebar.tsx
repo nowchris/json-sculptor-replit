@@ -46,7 +46,7 @@ export default function FileSidebar({
   };
 
   return (
-    <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
+    <div className="w-80 bg-white border-r border-slate-200 flex flex-col h-screen overflow-hidden">
       {/* Header */}
       <div className="p-6 border-b border-slate-200">
         <h1 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
@@ -57,7 +57,7 @@ export default function FileSidebar({
       </div>
 
       {/* File List */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 overflow-hidden flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-medium text-slate-700">Available Files</h2>
           <Button
@@ -71,7 +71,7 @@ export default function FileSidebar({
           </Button>
         </div>
 
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 max-h-full">
           <div className="space-y-2">
             {isLoading ? (
               <div className="text-sm text-slate-500 text-center py-4">

@@ -15,7 +15,7 @@ interface JsonBlockProps {
 }
 
 export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlockProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isRawMode, setIsRawMode] = useState(false);
   const [rawContent, setRawContent] = useState(JSON.stringify(value, null, 2));
   const { validate, validationError } = useJsonValidation();
@@ -185,46 +185,74 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
                 <>
                   {/* Check if this is a simple array (strings, numbers, booleans) */}
                   {value.every(item => typeof item !== "object" || item === null) ? (
-                    /* Simple array - render as comma-separated editable list */
+                    /* Simple array - render as list without indices */
                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
                       <div className="text-sm text-slate-600 mb-3">
                         Array with {value.length} item{value.length !== 1 ? 's' : ''}
                       </div>
                       <div className="space-y-2">
                         {value.map((item, index) => (
-                          <JsonField
-                            key={index}
-                            fieldKey={index.toString()}
-                            value={item}
-                            onChange={handleFieldChange}
-                            onDelete={handleFieldDelete}
-                            isArrayItem
-                          />
+                          <div key={index} className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-slate-400 rounded-full flex-shrink-0"></div>
+                            <JsonField
+                              fieldKey={index.toString()}
+                              value={item}
+                              onChange={handleFieldChange}
+                              onDelete={handleFieldDelete}
+                              isArrayItem
+                            />
+                          </div>
                         ))}
                       </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAddField}
+                        className="w-full mt-3 text-blue-600 border-blue-200 hover:bg-blue-50"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Item
+                      </Button>
                     </div>
                   ) : (
-                    /* Complex array - render individual blocks */
-                    value.map((item, index) => (
-                      <JsonBlock
-                        key={index}
-                        name={`[${index}]`}
-                        value={item}
-                        onChange={(newValue) => handleFieldChange(index.toString(), newValue)}
-                        onDelete={() => handleFieldDelete(index.toString())}
-                      />
-                    ))
+                    /* Complex array - render individual blocks with smart names */
+                    <>
+                      {value.map((item, index) => {
+                        // Try to find a suitable display name for the object
+                        let displayName = `[${index}]`;
+                        if (typeof item === "object" && item !== null) {
+                          // Look for common name fields in order of preference
+                          const nameFields = ['name', 'title', 'username', 'email', 'id', 'key'];
+                          for (const field of nameFields) {
+                            if (item[field] !== undefined && item[field] !== null) {
+                              displayName = `${item[field]}`;
+                              break;
+                            }
+                          }
+                        }
+                        
+                        return (
+                          <JsonBlock
+                            key={index}
+                            name={displayName}
+                            value={item}
+                            onChange={(newValue) => handleFieldChange(index.toString(), newValue)}
+                            onDelete={() => handleFieldDelete(index.toString())}
+                          />
+                        );
+                      })}
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAddField}
+                        className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Item
+                      </Button>
+                    </>
                   )}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAddField}
-                    className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Item
-                  </Button>
                 </>
               ) : (
                 <>

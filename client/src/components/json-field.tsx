@@ -127,34 +127,36 @@ export default function JsonField({
   };
 
   return (
-    <div className="grid grid-cols-4 gap-4 items-center group">
-      <div className="flex items-center gap-2">
-        {editingKey && !isArrayItem ? (
-          <Input
-            value={keyValue}
-            onChange={(e) => handleKeyChange(e.target.value)}
-            onBlur={handleKeyBlur}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleKeyBlur();
-              if (e.key === "Escape") {
-                setKeyValue(fieldKey);
-                setEditingKey(false);
-              }
-            }}
-            className="text-sm font-medium"
-            autoFocus
-          />
-        ) : (
-          <Label
-            className="text-sm font-medium text-slate-700 cursor-pointer"
-            onClick={() => !isArrayItem && setEditingKey(true)}
-          >
-            {isArrayItem ? `[${fieldKey}]` : fieldKey}
-          </Label>
-        )}
-      </div>
+    <div className={`${isArrayItem ? "flex items-center gap-2" : "grid grid-cols-4 gap-4 items-center"} group`}>
+      {!isArrayItem && (
+        <div className="flex items-center gap-2">
+          {editingKey ? (
+            <Input
+              value={keyValue}
+              onChange={(e) => handleKeyChange(e.target.value)}
+              onBlur={handleKeyBlur}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleKeyBlur();
+                if (e.key === "Escape") {
+                  setKeyValue(fieldKey);
+                  setEditingKey(false);
+                }
+              }}
+              className="text-sm font-medium"
+              autoFocus
+            />
+          ) : (
+            <Label
+              className="text-sm font-medium text-slate-700 cursor-pointer"
+              onClick={() => setEditingKey(true)}
+            >
+              {fieldKey}
+            </Label>
+          )}
+        </div>
+      )}
 
-      <div className="col-span-2 flex items-center gap-2">
+      <div className={`${isArrayItem ? "flex-1" : "col-span-2"} flex items-center gap-2`}>
         {renderValueInput()}
       </div>
 

@@ -152,7 +152,7 @@ export default function JsonEditor() {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="h-screen flex bg-slate-50 overflow-hidden">
       <FileSidebar
         files={(filesData as any)?.files || []}
         selectedFile={selectedFile}
@@ -163,7 +163,7 @@ export default function JsonEditor() {
         hasUnsavedChanges={hasUnsavedChanges}
       />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {selectedFile ? (
           <>
             {/* Top Bar */}
@@ -229,7 +229,7 @@ export default function JsonEditor() {
             </div>
 
             {/* Editor Area */}
-            <div className="flex-1 overflow-auto p-6">
+            <div className="flex-1 overflow-y-auto p-6">
               {contentLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-slate-500">Loading file content...</div>
