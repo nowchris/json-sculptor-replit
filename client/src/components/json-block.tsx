@@ -182,10 +182,30 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
           ) : canEdit ? (
             <div className="space-y-4">
               {Array.isArray(value) ? (
-                value.map((item, index) => {
-                  // For complex array items (objects), render as nested blocks
-                  if (typeof item === "object" && item !== null) {
-                    return (
+                <>
+                  {/* Check if this is a simple array (strings, numbers, booleans) */}
+                  {value.every(item => typeof item !== "object" || item === null) ? (
+                    /* Simple array - render as comma-separated editable list */
+                    <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                      <div className="text-sm text-slate-600 mb-3">
+                        Array with {value.length} item{value.length !== 1 ? 's' : ''}
+                      </div>
+                      <div className="space-y-2">
+                        {value.map((item, index) => (
+                          <JsonField
+                            key={index}
+                            fieldKey={index.toString()}
+                            value={item}
+                            onChange={handleFieldChange}
+                            onDelete={handleFieldDelete}
+                            isArrayItem
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    /* Complex array - render individual blocks */
+                    value.map((item, index) => (
                       <JsonBlock
                         key={index}
                         name={`[${index}]`}
@@ -193,58 +213,65 @@ export default function JsonBlock({ name, value, onChange, onDelete }: JsonBlock
                         onChange={(newValue) => handleFieldChange(index.toString(), newValue)}
                         onDelete={() => handleFieldDelete(index.toString())}
                       />
-                    );
-                  } else {
-                    // Simple values can use JsonField
-                    return (
-                      <JsonField
-                        key={index}
-                        fieldKey={index.toString()}
-                        value={item}
-                        onChange={handleFieldChange}
-                        onDelete={handleFieldDelete}
-                        isArrayItem
-                      />
-                    );
-                  }
-                })
+                    ))
+                  )}
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAddField}
+                    className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Item
+                  </Button>
+                </>
               ) : (
-                Object.entries(value).map(([key, fieldValue]) => {
-                  // For complex object properties, render as nested blocks
-                  if (typeof fieldValue === "object" && fieldValue !== null) {
-                    return (
-                      <JsonBlock
-                        key={key}
-                        name={key}
-                        value={fieldValue}
-                        onChange={(newValue) => handleFieldChange(key, newValue)}
-                        onDelete={() => handleFieldDelete(key)}
-                      />
-                    );
-                  } else {
-                    // Simple values can use JsonField
-                    return (
-                      <JsonField
-                        key={key}
-                        fieldKey={key}
-                        value={fieldValue}
-                        onChange={handleFieldChange}
-                        onDelete={handleFieldDelete}
-                      />
-                    );
-                  }
-                })
+                <>
+                  {/* Render simple fields first */}
+                  {Object.entries(value).map(([key, fieldValue]) => {
+                    if (typeof fieldValue !== "object" || fieldValue === null) {
+                      return (
+                        <JsonField
+                          key={key}
+                          fieldKey={key}
+                          value={fieldValue}
+                          onChange={handleFieldChange}
+                          onDelete={handleFieldDelete}
+                        />
+                      );
+                    }
+                    return null;
+                  })}
+                  
+                  {/* Add Field button after simple fields */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAddField}
+                    className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Field
+                  </Button>
+                  
+                  {/* Then render complex nested objects */}
+                  {Object.entries(value).map(([key, fieldValue]) => {
+                    if (typeof fieldValue === "object" && fieldValue !== null) {
+                      return (
+                        <JsonBlock
+                          key={key}
+                          name={key}
+                          value={fieldValue}
+                          onChange={(newValue) => handleFieldChange(key, newValue)}
+                          onDelete={() => handleFieldDelete(key)}
+                        />
+                      );
+                    }
+                    return null;
+                  })}
+                </>
               )}
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleAddField}
-                className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add {Array.isArray(value) ? "Item" : "Field"}
-              </Button>
             </div>
           ) : (
             <div className="p-4 bg-slate-50 rounded-md font-mono text-sm">

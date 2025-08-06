@@ -29,14 +29,25 @@ export default function RawEditor({
         </div>
       )}
 
-      <div className="relative">
+      <div className="relative flex">
+        {/* Line numbers */}
+        <div className="flex-shrink-0 p-4 pr-2 bg-slate-100 border-r border-slate-200 text-right">
+          <div className="font-mono text-xs text-slate-500 leading-6">
+            {content.split('\n').map((_, index) => (
+              <div key={index}>{index + 1}</div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Text area */}
         <Textarea
           value={content}
           onChange={(e) => onChange(e.target.value)}
-          className={`font-mono text-sm border-0 resize-none focus:ring-0 focus:outline-none bg-slate-50 ${
+          className={`flex-1 font-mono text-sm border-0 resize-none focus:ring-0 focus:outline-none bg-slate-50 leading-6 ${
             compact ? "h-48" : "h-96"
           }`}
           placeholder="Enter JSON content here..."
+          style={{ paddingLeft: '12px' }}
         />
       </div>
 

@@ -125,10 +125,11 @@ export default function JsonEditor() {
           } else {
             setValidationError(validation.error || "Invalid JSON");
             toast({
-              title: "Cannot save file",
+              title: "Cannot save file", 
               description: "Please fix JSON validation errors first",
               variant: "destructive",
             });
+            // Don't prevent further save attempts - just show the error
           }
         },
       });
