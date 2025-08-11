@@ -20,7 +20,8 @@ export default function JsonBlock({
   onChange,
   onDelete,
 }: JsonBlockProps) {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  // Auto-expand Content arrays, collapse others by default
+  const [isCollapsed, setIsCollapsed] = useState(name !== "Content");
   const [isRawMode, setIsRawMode] = useState(false);
   const [rawContent, setRawContent] = useState(JSON.stringify(value, null, 2));
   const { validate, validationError } = useJsonValidation();
@@ -80,6 +81,10 @@ export default function JsonBlock({
 
   const handleRawChange = (newRaw: string) => {
     setRawContent(newRaw);
+    // Clear validation error when user starts typing
+    if (validationError) {
+      validate(newRaw); // This will clear the error if content is now valid
+    }
   };
 
   const handleRawSave = () => {
