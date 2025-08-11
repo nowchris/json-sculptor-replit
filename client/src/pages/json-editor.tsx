@@ -94,8 +94,7 @@ export default function JsonEditor() {
 
   const handleJsonChange = (newContent: any) => {
     setJsonContent(newContent);
-    // Don't update rawContent to prevent array-to-object transformation
-    // Only update rawContent when user explicitly changes raw mode
+    setRawContent(JSON.stringify(newContent, null, 2));
     setHasUnsavedChanges(true);
     setValidationError(null);
   };
@@ -147,12 +146,6 @@ export default function JsonEditor() {
       });
       return;
     }
-    
-    // When switching to raw mode, sync rawContent with current jsonContent to show latest changes
-    if (mode === "raw" && jsonContent) {
-      setRawContent(JSON.stringify(jsonContent, null, 2));
-    }
-    
     setIsRawMode(mode === "raw");
   };
 
@@ -168,11 +161,7 @@ export default function JsonEditor() {
         hasUnsavedChanges={hasUnsavedChanges}
         onFileRestore={() => {
           // Refresh the current file content after restore
-          if (selectedFile) {
-            queryClient.invalidateQueries({ queryKey: ["/api/files/load", selectedFile.name] });
-            // Reset the editor to prevent transformation issues
-            setIsRawMode(false);
-          }
+          queryClient.invalidateQueries({ queryKey: ["/api/files/load", selectedFile?.name] });
         }}
       />
 
