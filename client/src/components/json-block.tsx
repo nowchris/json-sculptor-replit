@@ -156,7 +156,10 @@ export default function JsonBlock({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setIsRawMode(true)}
+                    onClick={() => {
+                      setIsRawMode(true);
+                      setIsCollapsed(false); // Auto-expand when entering raw mode
+                    }}
                     title="Edit raw JSON"
                   >
                     <Code className="h-4 w-4" />
