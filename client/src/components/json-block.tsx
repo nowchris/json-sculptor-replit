@@ -72,7 +72,47 @@ export default function JsonBlock({
 
   const handleAddField = () => {
     if (Array.isArray(value)) {
-      onChange([...value, ""]);
+      if (value.length === 0) {
+        // If array is empty, add a simple empty string
+        onChange([""])
+      } else {
+        // Check if this is a complex object array
+        const lastItem = value[value.length - 1];
+        if (typeof lastItem === "object" && lastItem !== null && !Array.isArray(lastItem)) {
+          // Copy the structure of the last item with empty/default values
+          const emptyItem = Object.keys(lastItem).reduce((acc, key) => {
+            const originalValue = lastItem[key];
+            if (typeof originalValue === "string") {
+              acc[key] = "";
+            } else if (typeof originalValue === "number") {
+              acc[key] = 0;
+            } else if (typeof originalValue === "boolean") {
+              acc[key] = false;
+            } else if (Array.isArray(originalValue)) {
+              acc[key] = [];
+            } else if (typeof originalValue === "object" && originalValue !== null) {
+              acc[key] = {};
+            } else {
+              acc[key] = null;
+            }
+            return acc;
+          }, {} as any);
+          
+          // Add the new item to the beginning of the array for visual purposes
+          onChange([emptyItem, ...value]);
+        } else {
+          // For simple arrays, add the same type as the last item
+          if (typeof lastItem === "string") {
+            onChange(["", ...value]);
+          } else if (typeof lastItem === "number") {
+            onChange([0, ...value]);
+          } else if (typeof lastItem === "boolean") {
+            onChange([false, ...value]);
+          } else {
+            onChange([lastItem, ...value]);
+          }
+        }
+      }
     } else if (typeof value === "object" && value !== null) {
       const newKey = `new_field_${Object.keys(value).length}`;
       onChange({ ...value, [newKey]: "" });
@@ -241,6 +281,16 @@ export default function JsonBlock({
                   ) : (
                     /* Complex array - render individual blocks with smart names, sorted alphabetically by Name */
                     <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAddField}
+                        className="w-full mb-4 text-blue-600 border-blue-200 hover:bg-blue-50"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Item
+                      </Button>
+                      
                       {value
                         .map((item, index) => ({ item, index }))
                         .sort((a, b) => {
@@ -296,16 +346,6 @@ export default function JsonBlock({
                           />
                         );
                       })}
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleAddField}
-                        className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Item
-                      </Button>
                     </>
                   )}
                 </>

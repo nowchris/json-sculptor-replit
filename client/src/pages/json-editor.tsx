@@ -106,9 +106,36 @@ export default function JsonEditor() {
     setValidationError(null);
   };
 
+  // Function to recursively sort arrays by Name field
+  const sortArraysByName = (obj: any): any => {
+    if (Array.isArray(obj)) {
+      // Check if this is an array of objects with Name fields
+      const hasNameFields = obj.length > 0 && obj.every(item => 
+        typeof item === "object" && item !== null && typeof item.Name === "string"
+      );
+      
+      if (hasNameFields) {
+        // Sort by Name field alphabetically
+        const sorted = [...obj].sort((a, b) => a.Name.localeCompare(b.Name));
+        return sorted.map(item => sortArraysByName(item));
+      } else {
+        // For other arrays, just recursively sort nested structures
+        return obj.map(item => sortArraysByName(item));
+      }
+    } else if (typeof obj === "object" && obj !== null) {
+      // For objects, recursively sort nested arrays
+      const result = {};
+      for (const [key, value] of Object.entries(obj)) {
+        result[key] = sortArraysByName(value);
+      }
+      return result;
+    }
+    return obj;
+  };
+
   const handleSave = () => {
     // Always use rawContent as the source of truth to preserve JSON structure
-    const contentToSave = rawContent;
+    let contentToSave = rawContent;
     
     // Validate the JSON before saving regardless of mode
     validateMutation.mutate(contentToSave, {
@@ -116,9 +143,14 @@ export default function JsonEditor() {
         if (validation.valid) {
           try {
             const parsed = JSON.parse(contentToSave);
-            setJsonContent(parsed);
+            // Sort arrays by Name field before saving
+            const sortedParsed = sortArraysByName(parsed);
+            const sortedContent = JSON.stringify(sortedParsed, null, 2);
+            
+            setJsonContent(sortedParsed);
+            setRawContent(sortedContent);
             setValidationError(null);
-            saveMutation.mutate(contentToSave);
+            saveMutation.mutate(sortedContent);
           } catch {
             setValidationError("Failed to parse JSON");
           }
