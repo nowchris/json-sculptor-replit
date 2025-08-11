@@ -159,6 +159,10 @@ export default function JsonEditor() {
         isLoading={filesLoading}
         isSaving={saveMutation.isPending}
         hasUnsavedChanges={hasUnsavedChanges}
+        onFileRestore={() => {
+          // Refresh the current file content after restore
+          queryClient.invalidateQueries({ queryKey: ["/api/files/load", selectedFile?.name] });
+        }}
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">

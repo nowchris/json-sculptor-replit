@@ -1,9 +1,10 @@
-import { RefreshCw, Save, FileCode, History, Download } from "lucide-react";
+import { RefreshCw, Save, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import type { JsonFile } from "@shared/schema";
 import { queryClient } from "@/lib/queryClient";
+import BackupModal from "./backup-modal";
 
 interface FileSidebarProps {
   files: JsonFile[];
@@ -13,6 +14,7 @@ interface FileSidebarProps {
   isLoading: boolean;
   isSaving: boolean;
   hasUnsavedChanges: boolean;
+  onFileRestore?: () => void;
 }
 
 export default function FileSidebar({
@@ -23,6 +25,7 @@ export default function FileSidebar({
   isLoading,
   isSaving,
   hasUnsavedChanges,
+  onFileRestore,
 }: FileSidebarProps) {
   const handleRefresh = () => {
     queryClient.invalidateQueries({ queryKey: ["/api/files"] });
@@ -139,16 +142,10 @@ export default function FileSidebar({
           {isSaving ? "Saving..." : "Save Changes"}
         </Button>
 
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1" disabled>
-            <History className="h-4 w-4 mr-1" />
-            Backups
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1" disabled>
-            <Download className="h-4 w-4 mr-1" />
-            Export
-          </Button>
-        </div>
+        <BackupModal 
+          selectedFileName={selectedFile?.name || null} 
+          onRestore={onFileRestore}
+        />
       </div>
     </div>
   );

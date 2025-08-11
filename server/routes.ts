@@ -71,6 +71,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // List backup files for a specific JSON file
+  app.get("/api/backups/:filename", async (req, res) => {
+    try {
+      const { filename } = req.params;
+      const backups = await storage.listBackups(filename);
+      res.json({ backups });
+    } catch (error) {
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to list backups" 
+      });
+    }
+  });
+
+  // Restore a backup file
+  app.post("/api/backups/restore", async (req, res) => {
+    try {
+      const { filename, backupFilename } = req.body;
+      const result = await storage.restoreBackup(filename, backupFilename);
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ 
+        message: error instanceof Error ? error.message : "Failed to restore backup" 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

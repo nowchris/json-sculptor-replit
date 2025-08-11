@@ -7,6 +7,16 @@ export interface IStorage {
   loadJsonFile(filename: string): Promise<FileContentResponse>;
   saveJsonFile(filename: string, content: string): Promise<SaveResponse>;
   validateJson(content: string): Promise<ValidationResponse>;
+  listBackups(filename: string): Promise<BackupFile[]>;
+  restoreBackup(filename: string, backupFilename: string): Promise<SaveResponse>;
+}
+
+export interface BackupFile {
+  name: string;
+  originalFile: string;
+  path: string;
+  size: number;
+  createdAt: string;
 }
 
 export class FileSystemStorage implements IStorage {
@@ -146,6 +156,84 @@ export class FileSystemStorage implements IStorage {
         valid: false,
         error: 'Unknown JSON parsing error',
       };
+    }
+  }
+
+  async listBackups(filename: string): Promise<BackupFile[]> {
+    await this.ensureDirectories();
+    
+    try {
+      const files = await fs.readdir(this.backupPath);
+      const baseFilename = filename.replace('.json', '');
+      const backupFiles = files.filter(file => 
+        file.startsWith(`${baseFilename}_`) && file.endsWith('.json')
+      );
+      
+      const backupDetails = await Promise.all(
+        backupFiles.map(async (backupFilename) => {
+          const filePath = path.join(this.backupPath, backupFilename);
+          const stats = await fs.stat(filePath);
+          
+          // Extract timestamp from filename
+          const timestampMatch = backupFilename.match(/_(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})\.json$/);
+          const timestamp = timestampMatch ? timestampMatch[1].replace(/-/g, ':') : stats.mtime.toISOString();
+          
+          return {
+            name: backupFilename,
+            originalFile: filename,
+            path: filePath,
+            size: stats.size,
+            createdAt: timestamp,
+          };
+        })
+      );
+      
+      // Sort by creation date, newest first
+      return backupDetails.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (error) {
+      console.error('Error listing backup files:', error);
+      return [];
+    }
+  }
+
+  async restoreBackup(filename: string, backupFilename: string): Promise<SaveResponse> {
+    await this.ensureDirectories();
+    
+    const backupFilePath = path.join(this.backupPath, backupFilename);
+    const targetFilePath = path.join(this.dataPath, filename);
+    
+    try {
+      // Read the backup content
+      const backupContent = await fs.readFile(backupFilePath, 'utf-8');
+      
+      // Validate the backup content
+      const validation = await this.validateJson(backupContent);
+      if (!validation.valid) {
+        throw new Error(`Backup file contains invalid JSON: ${validation.error}`);
+      }
+      
+      // Create a backup of the current file before restoring
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+      const preRestoreBackupFilename = `${filename.replace('.json', '')}_pre-restore_${timestamp}.json`;
+      const preRestoreBackupPath = path.join(this.backupPath, preRestoreBackupFilename);
+      
+      try {
+        const currentContent = await fs.readFile(targetFilePath, 'utf-8');
+        await fs.writeFile(preRestoreBackupPath, currentContent, 'utf-8');
+      } catch {
+        // File doesn't exist, no backup needed
+      }
+      
+      // Restore the backup content
+      await fs.writeFile(targetFilePath, backupContent, 'utf-8');
+      
+      return {
+        success: true,
+        filename,
+        backupPath: `backup/${preRestoreBackupFilename}`,
+      };
+    } catch (error) {
+      throw new Error(`Failed to restore backup ${backupFilename}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }
