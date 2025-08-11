@@ -136,7 +136,7 @@ export class FileSystemStorage implements IStorage {
         
         return {
           valid: false,
-          error: error.message,
+          error: `Line ${line}: ${error.message.replace(/ at position \d+/, '')}`,
           line,
           column,
         };

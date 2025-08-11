@@ -107,36 +107,34 @@ export default function JsonEditor() {
   };
 
   const handleSave = () => {
-    const contentToSave = isRawMode ? rawContent : JSON.stringify(jsonContent, null, 2);
+    // Always use rawContent as the source of truth to preserve JSON structure
+    const contentToSave = rawContent;
     
-    // If in raw mode, validate the JSON before saving
-    if (isRawMode) {
-      validateMutation.mutate(contentToSave, {
-        onSuccess: (validation) => {
-          if (validation.valid) {
-            try {
-              const parsed = JSON.parse(contentToSave);
-              setJsonContent(parsed);
-              setValidationError(null);
-              saveMutation.mutate(contentToSave);
-            } catch {
-              setValidationError("Failed to parse JSON");
-            }
-          } else {
-            setValidationError(validation.error || "Invalid JSON");
-            toast({
-              title: "Cannot save file", 
-              description: "Please fix JSON validation errors first",
-              variant: "destructive",
-            });
-            // Don't prevent further save attempts - just show the error
+    // Validate the JSON before saving regardless of mode
+    validateMutation.mutate(contentToSave, {
+      onSuccess: (validation) => {
+        if (validation.valid) {
+          try {
+            const parsed = JSON.parse(contentToSave);
+            setJsonContent(parsed);
+            setValidationError(null);
+            saveMutation.mutate(contentToSave);
+          } catch {
+            setValidationError("Failed to parse JSON");
           }
-        },
-      });
-    } else {
-      // Visual mode - content is already valid
-      saveMutation.mutate(contentToSave);
-    }
+        } else {
+          setValidationError(validation.error || "Invalid JSON");
+          toast({
+            title: "Cannot save file", 
+            description: "Please fix JSON validation errors first",
+            variant: "destructive",
+          });
+        }
+      },
+      onError: () => {
+        setValidationError(null); // Clear validation error on request error
+      }
+    });
   };
 
   const toggleMode = (mode: "visual" | "raw") => {

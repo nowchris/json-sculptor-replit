@@ -90,6 +90,8 @@ export default function JsonBlock({
         const parsed = JSON.parse(rawContent);
         onChange(parsed);
         setIsRawMode(false);
+        // Update the raw content to match parsed data to prevent drift
+        setRawContent(JSON.stringify(parsed, null, 2));
       } catch {
         // Should not happen if validation passed
       }
@@ -229,9 +231,19 @@ export default function JsonBlock({
                       </Button>
                     </div>
                   ) : (
-                    /* Complex array - render individual blocks with smart names */
+                    /* Complex array - render individual blocks with smart names, sorted alphabetically by Name */
                     <>
-                      {value.map((item, index) => {
+                      {value
+                        .map((item, index) => ({ item, index }))
+                        .sort((a, b) => {
+                          // Sort by Name field if both have it, otherwise preserve original order
+                          if (typeof a.item === "object" && a.item !== null && a.item.Name &&
+                              typeof b.item === "object" && b.item !== null && b.item.Name) {
+                            return a.item.Name.localeCompare(b.item.Name);
+                          }
+                          return a.index - b.index;
+                        })
+                        .map(({ item, index }) => {
                         // Try to find a suitable display name for the object
                         let displayName = `[${index}]`;
                         if (typeof item === "object" && item !== null) {

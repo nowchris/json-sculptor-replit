@@ -28,7 +28,7 @@ export function useJsonValidation() {
           column = lines[lines.length - 1].length + 1;
         }
         
-        const errorMessage = `${error.message} (line ${line}, column ${column})`;
+        const errorMessage = `Line ${line}: ${error.message.replace(/ at position \d+/, '')}`;
         setValidationError(errorMessage);
         
         return {
