@@ -95,8 +95,7 @@ export default function JsonBlock({
         const parsed = JSON.parse(rawContent);
         onChange(parsed);
         setIsRawMode(false);
-        // Update the raw content to match parsed data to prevent drift
-        setRawContent(JSON.stringify(parsed, null, 2));
+        // Don't update rawContent to preserve original formatting and prevent array transformation
       } catch {
         // Should not happen if validation passed
       }
