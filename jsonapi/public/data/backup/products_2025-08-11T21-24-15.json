@@ -1,6 +1,6 @@
 {
   "JSONTitle": "Products",
-  "Location": "https://www.newschool.edu/about/university-resources/",
+  "Location": "https://www.newschool.edu/about/university-resources/policies/",
   "products": [
     {
       "id": 101,
@@ -14,11 +14,7 @@
         "color": "Black",
         "battery": "30 hours",
         "wireless": true,
-        "features": [
-          "Noise Cancelling",
-          "Quick Charge",
-          "Bluetooth 5.0"
-        ]
+        "features": ["Noise Cancelling", "Quick Charge", "Bluetooth 5.0"]
       },
       "reviews": {
         "average": 4.5,
@@ -38,11 +34,7 @@
         "dpi": 16000,
         "wireless": false,
         "huh": true,
-        "features": [
-          "Programmable Buttons",
-          "RGB Lighting",
-          "High Precision"
-        ]
+        "features": ["Programmable Buttons", "RGB Lighting", "High Precision"]
       },
       "reviews": {
         "average": 4.2,
@@ -50,11 +42,7 @@
       }
     }
   ],
-  "categories": [
-    "Electronics",
-    "Gaming",
-    "Accessories"
-  ],
+  "categories": ["Electronics", "Gaming", "Accessories"],
   "metadata": {
     "lastUpdated": "2024-08-06T19:30:00Z",
     "totalProducts": 2,

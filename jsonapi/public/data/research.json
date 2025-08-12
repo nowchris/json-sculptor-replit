@@ -1,0 +1,309 @@
+{
+  "Content": [
+    {
+      "characterGroup": "A",
+      "Name": "About The New School",
+      "url": "https://blogs.newschool.edu/pressroom/home/about/",
+      "_Categories": [
+        "faculty",
+        "students",
+        "press & media",
+        "corporate & foundation relations"
+      ]
+    },
+    {
+      "characterGroup": "C",
+      "Name": "Centers, Institutes, & Labs",
+      "url": "/academics/research-centers-institutes-labs/",
+      "_Categories": [
+        "Faculty",
+        "Students",
+        "Alumni",
+        "Press & Media",
+        "Corporate & Foundation Relations"
+      ]
+    },
+    {
+      "characterGroup": "C",
+      "Name": "Collaboratory",
+      "url": "https://thenewschoolcollaboratory.org/",
+      "_Categories": ["faculty", "students", "alumni"]
+    },
+    {
+      "characterGroup": "C",
+      "Name": "Corporate Relations Contacts",
+      "url": "/giving/ways-to-give/",
+      "_Categories": ["corporate & foundation relations"]
+    },
+    {
+      "characterGroup": "E",
+      "Name": "Engaged Learning Opportunities",
+      "url": "/lang/engaged-learning-opportunities/",
+      "_Categories": ["students", "alumni"]
+    },
+    {
+      "characterGroup": "E",
+      "Name": "Entrepreneurial Development",
+      "url": "https://blogs.newschool.edu/tnschangemakers/entrepreneurship/",
+      "_Categories": ["students", "alumni"]
+    },
+    {
+      "characterGroup": "E",
+      "Name": "Events",
+      "url": "https://events.newschool.edu/?filters=general_public&online_event",
+      "_Categories": [
+        "faculty",
+        "students",
+        "alumni",
+        "press & media",
+        "corporate & foundation relations"
+      ]
+    },
+    {
+      "characterGroup": "F",
+      "Name": "Faculty Experts",
+      "url": "/faculty-experts/",
+      "_Categories": [
+        "faculty",
+        "students",
+        "alumni",
+        "press & media",
+        "corporate & foundation relations"
+      ]
+    },
+    {
+      "characterGroup": "F",
+      "Name": "Faculty Research Awards",
+      "url": "https://www.researchnewschool.com/copy-of-our-research-awards",
+      "_Categories": ["faculty"]
+    },
+    {
+      "characterGroup": "F",
+      "Name": "Faculty Research Funding",
+      "url": "/provost/faculty-funding-opportunities/",
+      "_Categories": ["faculty"]
+    },
+    {
+      "characterGroup": "F",
+      "Name": "Faculty Teaching Awards",
+      "url": "/provost/faculty-teaching-awards/",
+      "_Categories": ["faculty"]
+    },
+    {
+      "characterGroup": "F",
+      "Name": "Featured Work",
+      "url": "/research-creative-practice/featured-work/",
+      "_Categories": [
+        "faculty",
+        "students",
+        "alumni",
+        "press & media",
+        "corporate & foundation relations"
+      ]
+    },
+    {
+      "characterGroup": "F",
+      "Name": "Fellowships & Funding Opportunities",
+      "url": "/nssr/institutional-funding/",
+      "_Categories": ["students", "alumni"]
+    },
+    {
+      "characterGroup": "F",
+      "Name": "Funding Sources",
+      "url": "/nssr/funding-websites/",
+      "_Categories": ["students", "alumni"]
+    },
+    {
+      "characterGroup": "G",
+      "Name": "Gift Planning",
+      "url": "/giving/planned/",
+      "_Categories": []
+    },
+    {
+      "characterGroup": "G",
+      "Name": "Graduate Resources",
+      "url": "/career-services/graduate-resources/",
+      "_Categories": ["students", "alumni"]
+    },
+    {
+      "characterGroup": "G",
+      "Name": "Grant Applications",
+      "url": "/nssr/external-funding/",
+      "_Categories": ["faculty", "students", "alumni"]
+    },
+    {
+      "characterGroup": "I",
+      "Name": "Impact Entrepreneurship Initiative",
+      "url": "/impact-entrepreneurship/",
+      "_Categories": ["students", "alumni"]
+    },
+    {
+      "characterGroup": "I",
+      "Name": "Internship Policies",
+      "url": "/career-services/internship-policies/",
+      "_Categories": ["students"]
+    },
+    {
+      "characterGroup": "I",
+      "Name": "Internships",
+      "url": "/career-services/internships/",
+      "_Categories": ["students"]
+    },
+    {
+      "characterGroup": "L",
+      "Name": "Libraries & Archives",
+      "url": "https://library.newschool.edu/",
+      "_Categories": ["faculty", "students", "alumni"]
+    },
+    {
+      "characterGroup": "M",
+      "Name": "Make a Gift",
+      "url": "/giving/",
+      "_Categories": ["alumni"]
+    },
+    {
+      "characterGroup": "M",
+      "Name": "Making Center Resources",
+      "url": "https://makingcenter.parsons.edu/labs-shops-studios/",
+      "_Categories": ["faculty", "students", "alumni"]
+    },
+    {
+      "characterGroup": "M",
+      "Name": "Media Contacts",
+      "url": "https://blogs.newschool.edu/pressroom/home/media-contacts/",
+      "_Categories": ["press & media"]
+    },
+    {
+      "characterGroup": "M",
+      "Name": "Media Relations Policies & Guidelines",
+      "url": "/marketing-communication/policies-guidelines/",
+      "_Categories": ["press & media"]
+    },
+    {
+      "characterGroup": "M",
+      "Name": "Mission & Vision",
+      "url": "/about/mission-vision/",
+      "_Categories": ["faculty", "students", "alumni", "press & media"]
+    },
+    {
+      "characterGroup": "N",
+      "Name": "Networking & Mentorships",
+      "url": "https://thenewschoolnetwork.com/",
+      "_Categories": ["faculty", "students", "alumni"]
+    },
+    {
+      "characterGroup": "N",
+      "Name": "News",
+      "url": "https://blogs.newschool.edu/news/",
+      "_Categories": [
+        "faculty",
+        "students",
+        "alumni",
+        "press & media",
+        "corporate & foundation relations"
+      ]
+    },
+    {
+      "characterGroup": "O",
+      "Name": "Office of Research Support (ORS)",
+      "url": "https://www.researchnewschool.com/",
+      "_Categories": ["faculty", "students", "alumni"]
+    },
+    {
+      "characterGroup": "P",
+      "Name": "Parsons Thesis Work",
+      "url": "/parsons/our-work/",
+      "_Categories": [
+        "faculty",
+        "students",
+        "alumni",
+        "press & media",
+        "corporate & foundation relations"
+      ]
+    },
+    {
+      "characterGroup": "P",
+      "Name": "Professional Development",
+      "url": "/career-services/",
+      "_Categories": ["faculty", "students", "alumni"]
+    },
+    {
+      "characterGroup": "P",
+      "Name": "Public Seminar",
+      "url": "https://publicseminar.org//",
+      "_Categories": [
+        "faculty",
+        "students",
+        "alumni",
+        "press & media",
+        "corporate & foundation relations"
+      ]
+    },
+    {
+      "characterGroup": "R",
+      "Name": "Research Matters",
+      "url": "http://socialresearchmatters.org/ ",
+      "_Categories": [
+        "faculty",
+        "students",
+        "alumni",
+        "press & media",
+        "corporate & foundation relations"
+      ]
+    },
+    {
+      "characterGroup": "R",
+      "Name": "Research Support",
+      "url": "/provost/research-support/",
+      "_Categories": ["faculty", "students", "alumni"]
+    },
+    {
+      "characterGroup": "S",
+      "Name": "Scholars Program",
+      "url": "/lang/gural-scholars-program/",
+      "_Categories": ["students"]
+    },
+    {
+      "characterGroup": "S",
+      "Name": "Scholarship Advising Program",
+      "url": "/financial-aid/external-scholarships/",
+      "_Categories": ["students"]
+    },
+    {
+      "characterGroup": "S",
+      "Name": "Scholarships FAQ",
+      "url": "/financial-aid/external-scholarships-faq/",
+      "_Categories": ["students"]
+    },
+    {
+      "characterGroup": "S",
+      "Name": "Student Research Awards",
+      "url": "https://www.researchnewschool.com/our-research-awards",
+      "_Categories": ["students"]
+    },
+    {
+      "characterGroup": "T",
+      "Name": "The Faculty Center",
+      "url": "https://guidetoteaching.newschool.org/the-faculty-center/",
+      "_Categories": ["faculty"]
+    },
+    {
+      "characterGroup": "T",
+      "Name": "The New School Fact Sheets",
+      "url": "https://blogs.newschool.edu/pressroom/home/the-new-school-fact-sheets/",
+      "_Categories": ["press & media", "corporate & foundation relations"]
+    },
+    {
+      "characterGroup": "T",
+      "Name": "The Pressroom",
+      "url": "https://blogs.newschool.edu/pressroom/",
+      "_Categories": ["press & media", "corporate & foundation relations"]
+    },
+    {
+      "characterGroup": "U",
+      "Name": "Undergraduate Resources",
+      "url": "/career-services/undergrad-resources/",
+      "_Categories": ["students"]
+    }
+  ]
+}
