@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import type { JsonFile } from "@shared/schema";
 import { queryClient } from "@/lib/queryClient";
 import BackupModal from "./backup-modal";
+import SettingsModal from "./settings-modal";
 
 interface FileSidebarProps {
   files: JsonFile[];
@@ -48,7 +49,7 @@ export default function FileSidebar({
     return `Modified ${Math.floor(diffInHours / 24)} days ago`;
   };
 
-  const getDisplayName = (file: any) => {
+  const getDisplayName = (file: JsonFile) => {
     // Use displayName if available from server, otherwise fallback to filename
     return file.displayName || file.name;
   };
@@ -141,6 +142,8 @@ export default function FileSidebar({
           <Save className="h-4 w-4 mr-2" />
           {isSaving ? "Saving..." : "Save Changes"}
         </Button>
+
+        <SettingsModal files={files} />
 
         <BackupModal 
           selectedFileName={selectedFile?.name || null} 

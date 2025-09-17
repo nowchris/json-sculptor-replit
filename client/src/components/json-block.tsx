@@ -12,6 +12,10 @@ interface JsonBlockProps {
   value: any;
   onChange: (newValue: any) => void;
   onDelete: () => void;
+  // Delete marking system props
+  path?: string;
+  isMarked?: boolean;
+  onToggleMark?: (path: string) => void;
 }
 
 export default function JsonBlock({
@@ -19,6 +23,9 @@ export default function JsonBlock({
   value,
   onChange,
   onDelete,
+  path = "",
+  isMarked = false,
+  onToggleMark,
 }: JsonBlockProps) {
   // Auto-expand Content arrays, collapse others by default
   const [isCollapsed, setIsCollapsed] = useState(name !== "Content");
@@ -30,6 +37,22 @@ export default function JsonBlock({
     if (val === null) return "null";
     if (Array.isArray(val)) return "Array";
     return typeof val === "object" ? "Object" : typeof val;
+  };
+
+  // Check if this array should be protected from deletion
+  const isProtectedArray = () => {
+    return Array.isArray(value) && (name === "Content" || name === "Root Array");
+  };
+
+  // Handle delete button click - mark for deletion or delete immediately
+  const handleDeleteClick = () => {
+    if (onToggleMark && path) {
+      // Use marking system if available
+      onToggleMark(path);
+    } else {
+      // Fallback to immediate deletion
+      onDelete();
+    }
   };
 
   const getTypeColor = (type: string) => {
@@ -154,12 +177,22 @@ export default function JsonBlock({
   const canEdit = typeof value === "object" && value !== null;
 
   return (
-    <Card className="shadow-sm">
+    <Card className={`shadow-sm ${
+      isMarked 
+        ? "border-red-500 bg-red-50" 
+        : "border-slate-200 bg-white"
+    }`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h3 className="font-semibold text-slate-900">{name}</h3>
-            <Badge className={getTypeColor(valueType)}>{valueType}</Badge>
+            <h3 className={`font-semibold ${
+              isMarked ? "text-red-900 line-through" : "text-slate-900"
+            }`}>{name}</h3>
+            <Badge className={
+              isMarked 
+                ? "bg-red-100 text-red-600 border-red-300"
+                : getTypeColor(valueType)
+            }>{valueType}</Badge>
             {isRawMode && (
               <Badge
                 variant="outline"
@@ -220,9 +253,23 @@ export default function JsonBlock({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={onDelete}
-                  className="text-red-500 hover:text-red-700"
-                  title="Delete block"
+                  onClick={handleDeleteClick}
+                  disabled={isProtectedArray()}
+                  className={
+                    isProtectedArray() 
+                      ? "text-gray-400 cursor-not-allowed"
+                      : isMarked 
+                        ? "text-red-700 hover:text-red-900 bg-red-100"
+                        : "text-red-500 hover:text-red-700"
+                  }
+                  title={
+                    isProtectedArray() 
+                      ? "Cannot delete protected arrays (Content, Root Array)"
+                      : isMarked 
+                        ? "Unmark for deletion" 
+                        : "Mark for deletion"
+                  }
+                  data-testid={`button-delete-${name}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

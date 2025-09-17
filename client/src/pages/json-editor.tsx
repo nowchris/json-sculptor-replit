@@ -19,6 +19,8 @@ export default function JsonEditor() {
   const [jsonContent, setJsonContent] = useState<any>(null);
   const [rawContent, setRawContent] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
+  // Delete marking system
+  const [markedForDeletion, setMarkedForDeletion] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   // Load file list
@@ -106,6 +108,40 @@ export default function JsonEditor() {
     setValidationError(null);
   };
 
+  // Delete marking functions
+  const markForDeletion = (path: string) => {
+    setMarkedForDeletion(prev => {
+      const newSet = new Set(prev);
+      newSet.add(path);
+      return newSet;
+    });
+  };
+
+  const unmarkForDeletion = (path: string) => {
+    setMarkedForDeletion(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(path);
+      return newSet;
+    });
+  };
+
+  const toggleMarkForDeletion = (path: string) => {
+    if (markedForDeletion.has(path)) {
+      unmarkForDeletion(path);
+    } else {
+      markForDeletion(path);
+    }
+  };
+
+  const clearMarkedForDeletion = () => {
+    setMarkedForDeletion(new Set());
+  };
+
+  // Clear marked items when file changes
+  useEffect(() => {
+    clearMarkedForDeletion();
+  }, [selectedFile?.name]);
+
   // Function to recursively sort arrays by Name field
   const sortArraysByName = (obj: any): any => {
     if (Array.isArray(obj)) {
@@ -124,7 +160,7 @@ export default function JsonEditor() {
       }
     } else if (typeof obj === "object" && obj !== null) {
       // For objects, recursively sort nested arrays
-      const result = {};
+      const result: { [key: string]: any } = {};
       for (const [key, value] of Object.entries(obj)) {
         result[key] = sortArraysByName(value);
       }
@@ -133,7 +169,36 @@ export default function JsonEditor() {
     return obj;
   };
 
+  // Function to remove marked items from JSON
+  const removeMarkedItems = (obj: any, basePath: string = ""): any => {
+    if (Array.isArray(obj)) {
+      return obj
+        .filter((_, index) => !markedForDeletion.has(`${basePath}[${index}]`))
+        .map((item, index) => removeMarkedItems(item, `${basePath}[${index}]`));
+    } else if (typeof obj === "object" && obj !== null) {
+      const result: { [key: string]: any } = {};
+      for (const [key, value] of Object.entries(obj)) {
+        const currentPath = basePath ? `${basePath}.${key}` : key;
+        if (!markedForDeletion.has(currentPath)) {
+          result[key] = removeMarkedItems(value, currentPath);
+        }
+      }
+      return result;
+    }
+    return obj;
+  };
+
   const handleSave = () => {
+    // Check if any items are marked for deletion
+    if (markedForDeletion.size > 0) {
+      const confirmed = window.confirm(
+        `Are you sure you'd like to delete ${markedForDeletion.size} object(s)? This is irreversible.`
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
     // Always use rawContent as the source of truth to preserve JSON structure
     let contentToSave = rawContent;
     
@@ -142,7 +207,15 @@ export default function JsonEditor() {
       onSuccess: (validation) => {
         if (validation.valid) {
           try {
-            const parsed = JSON.parse(contentToSave);
+            let parsed = JSON.parse(contentToSave);
+            
+            // Remove marked items if any
+            if (markedForDeletion.size > 0) {
+              parsed = removeMarkedItems(parsed);
+              // Clear marked items after deletion
+              clearMarkedForDeletion();
+            }
+            
             // Sort arrays by Name field before saving
             const sortedParsed = sortArraysByName(parsed);
             const sortedContent = JSON.stringify(sortedParsed, null, 2);
@@ -276,17 +349,18 @@ export default function JsonEditor() {
                 />
               ) : (
                 <div className="space-y-6">
-                  {/* Location Link */}
-                  {jsonContent?.Location && (
+                  {/* Location Link from Settings */}
+                  {selectedFile?.url && (
                     <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                       <span className="text-sm text-blue-800 font-medium">Live page: </span>
                       <a
-                        href={jsonContent.Location}
+                        href={selectedFile.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:text-blue-800 underline text-sm"
+                        data-testid="link-live-page"
                       >
-                        {jsonContent.Location}
+                        {selectedFile.url}
                       </a>
                     </div>
                   )}
@@ -301,6 +375,9 @@ export default function JsonEditor() {
                             key={key}
                             name={key}
                             value={value}
+                            path={key}
+                            isMarked={markedForDeletion.has(key)}
+                            onToggleMark={toggleMarkForDeletion}
                             onChange={(newValue) => {
                               const newContent = { ...jsonContent, [key]: newValue };
                               handleJsonChange(newContent);
@@ -317,6 +394,9 @@ export default function JsonEditor() {
                         key="root"
                         name="Root Array"
                         value={jsonContent}
+                        path="root"
+                        isMarked={markedForDeletion.has("root")}
+                        onToggleMark={toggleMarkForDeletion}
                         onChange={handleJsonChange}
                         onDelete={() => handleJsonChange([])}
                       />

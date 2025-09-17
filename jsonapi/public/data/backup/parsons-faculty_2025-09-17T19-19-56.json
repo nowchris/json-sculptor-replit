@@ -1,122 +1,5 @@
 [
   {
-    "titlePrograms": [
-      "Faculty, Art, Media, and Techology"
-    ],
-    "links": [
-      {
-        "url": "http://www.37-2.com/works/18/the-whitewalkers",
-        "label": "www.37-2.com/works/18/the-whitewalkers"
-      }
-    ],
-    "description": "<p>Born in 1979 in Greece, Felicie d'Estienne d'Orves is a French new media artist whose work combines light, sculpture and new technologies. Her research focuses on vision, it’s processes and conditioning. Her immersive installations use a phenomenological approach to reality, they underscore the perception of time as a continuum. Since 2014, the artist’ researches focused on space in relation to astrophysics and to study the natural light cycles.</p><p>She holds a multimedia degree and a master degree in interactive research (A.R.I.) from École nationale supérieure des Arts Décoratifs (ENSAD Paris). Her work has been shown at the Centre Pompidou (Paris / FR) – Nuit Blanche (Paris / FR) – Le Centquatre / Nemo International Biennial of Digital Arts (Paris / FR) – Pommery Champagne Cellars (FR) – New Art Space / Sonic Acts (Amsterdam / NL) – Watermans Arts Center (London / UK) – Elektra Festival / BIAN (Montreal / CA) – OCAT (Shanghai / CN) – Aram Art Museum (Goyang / KR) – Luz y Vanguardias (ES) – Day For Night (Houston / US), etc.</p> ",
-    "displayName": "Félicie d'Estienne d'Orves",
-    "alphaName": "destienne-dorves",
-    "image": "/uploadedImages/Parsons_Paris/Faculty/d_Estienne d_Orves_Felicie.jpg"
-  },
-  {
-    "titlePrograms": [
-      "Faculty, Fashion Design"
-    ],
-    "links": [
-      {
-        "label": "www.yongandersson.com",
-        "url": "http://www.yongandersson.com"
-      }
-    ],
-    "description": "<p>Yong Andersson is the designer for her own collection of conceptual hand tailored jackets. The collection incorporates interdisciplinary fields transcending illustration and costume history, gender and crafted fashion. The collection is presented through lectures and performances, cross-collaborated with artists and designers. Yong's teaching record includes theory, methodology, research and practice from drawing; design processing bridging visual illustration; Postgraduate Contemporary Fashion Design; and MBA Global Fashion Media.</p><p>She holds a BA in Fashion from Paris American Academy and L’Institut des Arts Appliquées, Paris and a BA in Art History from Uppsala University, Sweden. She has worked with trend forecaster Li Edelkoort, for haute couture, and for high-end designers including Sibilla Pavenstedt and Marcel Magongiu. She has collaborated as a writer and coordinator on ten books about young artists' ateliers, homes and vintage boutiques from Stockholm, Copenhagen and Paris for the Tokyo based gallery and publisher, Paumes Editions.</p> ",
-    "displayName": "Yong Andersson",
-    "alphaName": "andersson",
-    "image": "/uploadedImages/Parsons_Paris/Faculty/Yong-Andersson-crop.jpg"
-  },
-  {
-    "displayName": "Eros Antoniadis",
-    "alphaName": "antoniadis",
-    "titlePrograms": [
-      "Faculty, Strategic Design & Management"
-    ],
-    "image": "/uploadedImages/Parsons_Paris/Faculty/Antoniadis_Eros_300x300.jpg",
-    "continuingEd": false,
-    "noDetail": false,
-    "description": "<p>After graduating in Fine Arts from California College of Arts, Erotokritos Antoniadis started his creative and entrepreneurial activity before specialising in Fashion Design at Studio Berçot in Paris.</p><p>In 1996 he founded an eponymous fashion label and opened a Parisian flagship store, Erotokritos, with product distribution via fashion boutiques and department stores worldwide. He completed his MBA in Global Fashion Management at Institut Français de la Mode (IFM Paris) in 2010.</p><p>In parallel with his activity as the Creative Director of Erotokritos, he also worked as a design and forecasting consultant for various clients including Shiseido, L'Oréal, Monoprix, La Redoute and René Derhy, and started his academic activity in various universities.</p>",
-    "links": [
-      {
-        "label": "www.erotokritos.com",
-        "url": "https://www.erotokritos.com/"
-      }
-    ]
-  },
-  {
-    "displayName": "Anne Attali",
-    "alphaName": "attali",
-    "titlePrograms": [
-      "Faculty, First Year"
-    ],
-    "image": "/uploadedImages/Parsons_Paris/Faculty/Attali,Anne-300.jpg",
-    "continuingEd": false,
-    "noDetail": false,
-    "description": "<p>Anne Attali designs walks, creates maps, writes and lectures on experiencing the city. She teaches “Urban Exploration” at the Illinois Institute of Technology (Chicago) in their Paris Program, and has been working regularly with French and international schools, proposing workshops and lectures using the city as a material, to art, architecture and scenography students: Ecole Nationale Supérieure des Arts Décoratifs (ENSAD), Columbia University NY-Paris Program, Ecole Nat. Sup. d’Architecture Paris-Malaquais, Ecole Camondo. She also taught at Paris College of Art (2009-2013).</p><p>Recent projects: &quot;Walk/Talk&quot;, ongoing project conceived with Chloe Briggs (proposals published in SpecialeZ architecture magazine #4, and in &quot;A journey through shared spaces&quot;, a Palais de Tokyo publication directed by Charlotte Moth, 2013); essay included in &quot;La ville est à nous&quot;, published by &quot;Ne pas plier&quot;, 2011. She also works on theater projects: &quot;La Mécanique des phénomènes&quot; and &quot;Anomalies et Perspectives&quot;, a collaboration with Cécile St Paul, 2008-ongoing; and on illustrated books: &quot;Willie est Willie&quot; with Marie Van Roey, text by Gertrude Stein, published in 2010. She has an MA in Scenography from ENSAD, and a BA in Textile Design from Ecole Nat. Sup. des Arts Appliqués. She spent a year in Rome at the Villa Medici as an artist in residence.</p>",
-    "links": ""
-  },
-  {
-    "displayName": "Lorraine Audric",
-    "alphaName": "audric",
-    "titlePrograms": [
-      "Faculty, First Year"
-    ],
-    "image": "/uploadedImages/Parsons_Paris/Faculty/Audric,Lorraine-300(1).jpg",
-    "continuingEd": false,
-    "noDetail": false,
-    "description": "<p>Lorraine Audric is an art historian and independent curator trained in Paris (Ecole de Louvre) and New York (Columbia University), with a focus on photography and visual culture.</p><p>Lorraine is a research fellow at IMEC (<i>Institut Mémoire de l’Edition Contemporaine</i>) in charge of Gisèle Freund’s photographic archive (publications, exhibitions, long-term digitization project). She has worked with Akademie der Künste (Berlin), Guggenheim Museum (NYC), Pierre Bergé/Yves-Saint-Laurent Foundation (Paris), Modern Art Museum (Mexico-City) and FIAC Parcours Privé (Paris).</p>",
-    "links": ""
-  },
-  {
-    "displayName": "James Auger",
-    "alphaName": "auger",
-    "titlePrograms": [
-      "Faculty, Design & Technology"
-    ],
-    "image": "/uploadedImages/Parsons_Paris/Faculty/Auger_James_300x300.jpg",
-    "continuingEd": false,
-    "noDetail": false,
-    "description": "<p>James Auger is a designer and researcher who uses speculative and critical design approaches to examine what it means to exist in a technology rich environment both today and in the near future.</p><p>After graduating from Design Products (MA) at the Royal College of Art James moved to Dublin to conduct research at Media Lab Europe (MLE) exploring the theme of human communication as mediated by technology. After MLE he worked in Tokyo as guest designer at the Issey Miyake Design Studio developing new concepts for mobile telephones. Between 2005 and 2015 James was part of the critically acclaimed Design Interactions department at the RCA, teaching on the MA programme and continuing his development of critical and speculative approaches to design and technology, completing his PhD on the subject in 2012.</p><p>After the RCA James led the Reconstrained Design Group at Madeira Interactive Technologies Institute (M-ITI) in Portugal, exploring the potential of the island as an experimental living laboratory through a combination of fictional, factual and functional multi-scale energy-related proposals and projects. This work was awarded the Cultural Innovation International Prize by the Centre of Contemporary Culture of Barcelona (CCCB) in 2017.</p><p>Running parallel to his academic work James is partner in the speculative design practice Auger-Loizeau, a collaboration founded in 2000. Auger-Loizeau projects have been published and exhibited internationally, including MoMA, New York; 21_21, Tokyo; The Science Museum, London; The National Museum of China, Beijing and Ars Electronica, Linz. Their work is in the permanent collection at MoMA.</p>",
-    "links": [
-      {
-        "label": "www.auger-loizeau.com",
-        "url": "http://www.auger-loizeau.com"
-      },
-      {
-        "label": "crapfutures.tumblr.com",
-        "url": "http://crapfutures.tumblr.com"
-      },
-      {
-        "label": "@crapfutures",
-        "url": "https://twitter.com/crapfutures"
-      }
-    ]
-  },
-  {
-    "displayName": "Laëtitia Badaut Haussmann",
-    "alphaName": "haussmann",
-    "titlePrograms": [
-      "Faculty, First Year"
-    ],
-    "image": "/uploadedImages/Parsons_Paris/Faculty/Laetitia-Badaut-Haussmann.jpg",
-    "continuingEd": false,
-    "noDetail": false,
-    "description": "<p>Laëtitia Badaut Haussmann was born in Paris, France, where she is living and working. She graduated from the École Nationale Supérieure d’Arts de Paris-Cergy in 2006, she was part of the residency program Le Pavillon at the Palais de Tokyo in 2011-2012 and was in residency at Villa Kujoyama in Kyoto in 2016, a program of the Institut Français in Japan. She is working with Galerie Allen which has shown her work on different occasions, including a solo show at FIAC in 2015 and at Artorama in 2015. She is currently working on a one year exhibition project with La Galerie in Noisy le Sec, and will présent a solo exhibition at Villa Carré in June, followed by a solo show at Galerie Allen in September 2017. Her work is exhibited in Europe and abroad, including at FUTURA (Prague, CZ), Syntax (Lisbon, PT), Hepworth Wakefield (UK), MRAC (Serignan, FR), Viafarini (Milan, IT), Passerelle CAC (Brest, FR), Palais de Tokyo (Paris, FR), IAC (Villeurbanne, FR), Baxter St. (New York, USA), Centre Pompidou (Paris/Metz, FR), Gesso Art Space (Vienna, AT), MAMVP (Paris, FR), The Barber Shop (Lisbon, PT), MMSU (Rijeka, HU), Benaki Museum (Thessalonique, GR).</p>",
-    "links": [
-      {
-        "label": "Laëtitia Badaut Haussmann",
-        "url": "http://www.laetitiabadauthaussmann.com/"
-      },
-      {
-        "label": "Galerie Allen",
-        "url": "http://www.galerieallen.com/"
-      }
-    ]
-  },
-  {
     "displayName": "Peter Behrman de Sinéty",
     "alphaName": "behrman-de-sinety",
     "titlePrograms": [
@@ -127,23 +10,6 @@
     "noDetail": false,
     "description": "<p>Peter Behrman de Sinéty is a writer, translator and lecturer at the Ecole Normale Supérieure, Paris. Born in Maine, Peter studied English literature at Yale University (B.A.) and Paris-Sorbonne University (M.A.). Since 2011, he has taught courses in twentieth-century British and American poetry, American film, creative writing, and academic writing at the ENS. His translations include texts by Julia Kristeva, Alejandro Jodorowsky, and Hans Ulrich Obrist, among others. As the executor of the estate of the photographer Madeleine de Sinéty, he is currently working on a retrospective exhibition and photography book with the Musée Nicéphore Niépce and Éditions Xavier Barral. </p>",
     "links": ""
-  },
-  {
-    "displayName": "Isidore Bethel",
-    "alphaName": "bethel",
-    "titlePrograms": [
-      "Faculty, History of Design and Curatorial Studies"
-    ],
-    "image": "/uploadedImages/Parsons_Paris/Faculty/Bethel_Isidore.jpg",
-    "continuingEd": false,
-    "noDetail": false,
-    "description": "<p>Isidore Bethel is a French-American filmmaker.</p><p>He is a graduate of Harvard College, the École Normale Supérieure, and the School of the Art Institute of Chicago, Isidore's work has screened at Cannes (Official Selection), the Museum of Modern Art, and the Pompidou Center.</p><p>He has received fellowships from the Lagardère Foundation, the Jack Kent Cooke Foundation, the Tribeca Film Institute Network, Film Independent, IFP, Berlinale Talents, and EuroDoc.</p><p>He has been an artist-in-residence with the Institut Français, the Villa Medici in Rome, and the California Institute of the Arts and has taught film at Sarah Lawrence College in Paris.</p>",
-    "links": [
-      {
-        "label": "www.isidorebethel.com",
-        "url": "http://www.isidorebethel.com"
-      }
-    ]
   },
   {
     "displayName": "Francesca Bonesio",
@@ -941,6 +807,30 @@
         "url": "https://www.septieme.com/pages/press"
       }
     ]
+  },
+  {
+    "displayName": "Jerome Saint-Clair",
+    "alphaName": "saint-clair",
+    "titlePrograms": [
+      "Faculty, Art, Media and Technology"
+    ],
+    "image": "/uploadedImages/Parsons_Paris/Faculty/JeromeSaintClair-bw-200.jpg",
+    "continuingEd": false,
+    "noDetail": false,
+    "description": "<p>Jerome Saint-Clair is a French artist and engineer working mainly in the field of new media. His artwork includes computer based generative systems, interactive installations, software libraries, but also drawings and computer-free installations or objects. His recent work focus on graffiti and also the permeability between the digital and the physical worlds. He initiated the creation of the French branch of the Graffiti Research Lab.</p>",
+    "links": ""
+  },
+  {
+    "displayName": "Emily Song",
+    "alphaName": "song",
+    "titlePrograms": [
+      "Faculty, Strategic Design & Management"
+    ],
+    "image": "/uploadedImages/Parsons_Paris/Faculty/Song_Emily_300x300.jpg",
+    "continuingEd": false,
+    "noDetail": false,
+    "description": "<p>Emily Song has over 20 years of business experience holding key positions in accounting, finance and business development. Her business background includes experience as a financial controller with investment bank ING Barings, an accounting and finance manager at Nautilus Biotech and a business developer with Winstar communication.</p><p>She is the founder of LUXE & EM, S.A.S, a company based in Paris, offers carefully selected authenticated luxury items. She holds a MBA in international business from Ecole Nationale des Ponts et Chaussées, Paris, France and she holds PhD ABD from International School of Management.</p><p>Professor Song is visiting professor at Ecole Nationale des Ponts et Chaussés, visiting professor at American Business School Paris, IEMI International Business School and visiting professor at INSEEC, Geneva, Switzerland. She teaches MBA and Executive MBA courses including Financial Accounting, Managerial Accounting, Financial Management, Business Finance, Entrepreneurial Financing, Writing Business Plans and Management Control.</p>",
+    "links": ""
   },
   {
     "displayName": "Chris Sugrue",

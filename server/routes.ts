@@ -1,29 +1,25 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { loadFileSchema, saveFileSchema, validateJsonSchema } from "@shared/schema";
+import { loadFileSchema, saveFileSchema, validateJsonSchema, saveSettingsSchema, restoreBackupSchema, backupPreviewParamsSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // List all JSON files
   app.get("/api/files", async (req, res) => {
     try {
       const files = await storage.listJsonFiles();
-      // Enhanced file listing with JSONTitle extraction
-      const filesWithTitles = await Promise.all(files.map(async (file) => {
-        try {
-          const fileContent = await storage.loadJsonFile(file.name);
-          const content = fileContent.content;
-          if (content.JSONTitle) {
-            return { ...file, displayName: content.JSONTitle };
-          }
-          if (content.Content?.JSONTitle) {
-            return { ...file, displayName: content.Content.JSONTitle };
-          }
-        } catch {
-          // If we can't read the file, skip title extraction
-        }
-        return { ...file, displayName: file.name };
-      }));
+      const settings = await storage.getSettings();
+      
+      // Enhanced file listing with settings-based titles
+      const filesWithTitles = files.map((file) => {
+        const settingsEntry = settings.entries.find(entry => entry.filename === file.name);
+        return { 
+          ...file, 
+          displayName: settingsEntry?.title || file.name,
+          url: settingsEntry?.url
+        };
+      });
+      
       res.json({ files: filesWithTitles });
     } catch (error) {
       res.status(500).json({ 
@@ -87,12 +83,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Restore a backup file
   app.post("/api/backups/restore", async (req, res) => {
     try {
-      const { filename, backupFilename } = req.body;
+      const { filename, backupFilename } = restoreBackupSchema.parse(req.body);
       const result = await storage.restoreBackup(filename, backupFilename);
       res.json(result);
     } catch (error) {
       res.status(400).json({ 
         message: error instanceof Error ? error.message : "Failed to restore backup" 
+      });
+    }
+  });
+
+  // Get backup preview
+  app.get("/api/backups/:filename/:backupFilename/preview", async (req, res) => {
+    try {
+      const { filename, backupFilename } = backupPreviewParamsSchema.parse(req.params);
+      const preview = await storage.getBackupPreview(filename, backupFilename);
+      res.json(preview);
+    } catch (error) {
+      res.status(400).json({ 
+        message: error instanceof Error ? error.message : "Failed to get backup preview" 
+      });
+    }
+  });
+
+  // Get settings
+  app.get("/api/settings", async (req, res) => {
+    try {
+      const settings = await storage.getSettings();
+      res.json({ settings });
+    } catch (error) {
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to get settings" 
+      });
+    }
+  });
+
+  // Save settings
+  app.post("/api/settings", async (req, res) => {
+    try {
+      const { settings } = saveSettingsSchema.parse(req.body);
+      const result = await storage.saveSettings(settings);
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ 
+        message: error instanceof Error ? error.message : "Failed to save settings" 
       });
     }
   });

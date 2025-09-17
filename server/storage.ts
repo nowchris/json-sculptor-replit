@@ -1,4 +1,4 @@
-import { type JsonFile, type FileContentResponse, type SaveResponse, type ValidationResponse } from "@shared/schema";
+import { type JsonFile, type FileContentResponse, type SaveResponse, type ValidationResponse, type BackupFile, type Settings, type SettingsResponse } from "@shared/schema";
 import { promises as fs } from "fs";
 import path from "path";
 
@@ -9,23 +9,21 @@ export interface IStorage {
   validateJson(content: string): Promise<ValidationResponse>;
   listBackups(filename: string): Promise<BackupFile[]>;
   restoreBackup(filename: string, backupFilename: string): Promise<SaveResponse>;
+  getBackupPreview(filename: string, backupFilename: string): Promise<{ filename: string, raw: string, size: number, createdAt: string }>;
+  getSettings(): Promise<Settings>;
+  saveSettings(settings: Settings): Promise<{ success: boolean }>;
 }
 
-export interface BackupFile {
-  name: string;
-  originalFile: string;
-  path: string;
-  size: number;
-  createdAt: string;
-}
 
 export class FileSystemStorage implements IStorage {
   private dataPath: string;
   private backupPath: string;
+  private settingsPath: string;
 
   constructor() {
     this.dataPath = path.resolve(process.cwd(), "jsonapi/public/data");
     this.backupPath = path.resolve(this.dataPath, "backup");
+    this.settingsPath = path.resolve(this.dataPath, "settings.json");
   }
 
   async ensureDirectories(): Promise<void> {
@@ -179,11 +177,9 @@ export class FileSystemStorage implements IStorage {
           const timestamp = timestampMatch ? timestampMatch[1].replace(/-/g, ':') : stats.mtime.toISOString();
           
           return {
-            name: backupFilename,
-            originalFile: filename,
-            path: filePath,
+            filename: backupFilename,
             size: stats.size,
-            createdAt: timestamp,
+            createdAt: stats.mtime.toISOString(),
           };
         })
       );
@@ -199,7 +195,16 @@ export class FileSystemStorage implements IStorage {
   async restoreBackup(filename: string, backupFilename: string): Promise<SaveResponse> {
     await this.ensureDirectories();
     
-    const backupFilePath = path.join(this.backupPath, backupFilename);
+    // Sanitize backupFilename to prevent path traversal
+    const sanitizedBackupFilename = path.basename(backupFilename);
+    
+    // Validate that backup filename belongs to the specified file
+    const baseFilename = filename.replace('.json', '');
+    if (!sanitizedBackupFilename.startsWith(`${baseFilename}_`) || !sanitizedBackupFilename.endsWith('.json')) {
+      throw new Error(`Invalid backup filename: ${backupFilename}`);
+    }
+    
+    const backupFilePath = path.join(this.backupPath, sanitizedBackupFilename);
     const targetFilePath = path.join(this.dataPath, filename);
     
     try {
@@ -234,6 +239,62 @@ export class FileSystemStorage implements IStorage {
       };
     } catch (error) {
       throw new Error(`Failed to restore backup ${backupFilename}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async getBackupPreview(filename: string, backupFilename: string): Promise<{ filename: string, raw: string, size: number, createdAt: string }> {
+    await this.ensureDirectories();
+    
+    // Sanitize backupFilename to prevent path traversal
+    const sanitizedBackupFilename = path.basename(backupFilename);
+    
+    // Validate that backup filename belongs to the specified file
+    const baseFilename = filename.replace('.json', '');
+    if (!sanitizedBackupFilename.startsWith(`${baseFilename}_`) || !sanitizedBackupFilename.endsWith('.json')) {
+      throw new Error(`Invalid backup filename: ${backupFilename}`);
+    }
+    
+    const backupFilePath = path.join(this.backupPath, sanitizedBackupFilename);
+    
+    try {
+      const stats = await fs.stat(backupFilePath);
+      const content = await fs.readFile(backupFilePath, 'utf-8');
+      
+      return {
+        filename: sanitizedBackupFilename,
+        raw: content,
+        size: stats.size,
+        createdAt: stats.mtime.toISOString(),
+      };
+    } catch (error) {
+      throw new Error(`Failed to read backup ${sanitizedBackupFilename}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async getSettings(): Promise<Settings> {
+    await this.ensureDirectories();
+    
+    try {
+      const content = await fs.readFile(this.settingsPath, 'utf-8');
+      return JSON.parse(content);
+    } catch (error) {
+      // Only return empty settings if file doesn't exist (ENOENT)
+      if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+        return { entries: [] };
+      }
+      throw error;
+    }
+  }
+
+  async saveSettings(settings: Settings): Promise<{ success: boolean }> {
+    await this.ensureDirectories();
+    
+    try {
+      const content = JSON.stringify(settings, null, 2);
+      await fs.writeFile(this.settingsPath, content, 'utf-8');
+      return { success: true };
+    } catch (error) {
+      throw new Error(`Failed to save settings: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }

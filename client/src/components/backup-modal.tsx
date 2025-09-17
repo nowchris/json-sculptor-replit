@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { History, RotateCcw, Clock, FileText, X } from "lucide-react";
+import { History, RotateCcw, Clock, FileText, X, Eye, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -23,6 +23,7 @@ interface BackupModalProps {
 
 export default function BackupModal({ selectedFileName, onRestore }: BackupModalProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [previewBackup, setPreviewBackup] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Fetch backups for the selected file
@@ -33,6 +34,17 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
       if (!selectedFileName) return { backups: [] };
       const response = await apiRequest("GET", `/api/backups/${selectedFileName}`);
       return response.json() as Promise<{ backups: BackupFile[] }>;
+    },
+  });
+
+  // Fetch backup preview
+  const { data: previewData, isLoading: previewLoading } = useQuery({
+    queryKey: ["/api/backups/preview", selectedFileName, previewBackup],
+    enabled: !!selectedFileName && !!previewBackup,
+    queryFn: async () => {
+      if (!selectedFileName || !previewBackup) return null;
+      const response = await apiRequest("GET", `/api/backups/${selectedFileName}/${previewBackup}/preview`);
+      return response.json() as Promise<{ filename: string, raw: string, size: number, createdAt: string }>;
     },
   });
 
@@ -73,7 +85,7 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
 
   const formatDate = (dateString: string) => {
     try {
-      const date = new Date(dateString.replace(/-/g, ':'));
+      const date = new Date(dateString);
       return date.toLocaleString();
     } catch {
       return dateString;
@@ -82,7 +94,7 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
 
   const getRelativeTime = (dateString: string) => {
     try {
-      const date = new Date(dateString.replace(/-/g, ':'));
+      const date = new Date(dateString);
       const now = new Date();
       const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
@@ -95,8 +107,27 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
     }
   };
 
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copied to clipboard",
+        description: "Backup content has been copied to clipboard",
+      });
+    } catch (error) {
+      toast({
+        title: "Copy failed",
+        description: "Failed to copy to clipboard",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      setIsOpen(open);
+      if (!open) setPreviewBackup(null); // Reset preview when main modal closes
+    }}>
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
@@ -108,7 +139,7 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
           Backups
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh]">
+      <DialogContent className="max-w-2xl h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <History className="h-5 w-5" />
@@ -116,13 +147,13 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="flex-1 min-h-0">
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-slate-500">Loading backups...</div>
             </div>
           ) : (
-            <ScrollArea className="max-h-96">
+            <ScrollArea className="h-full">
               <div className="space-y-3">
                 {backupsData?.backups.length === 0 ? (
                   <div className="text-center py-8 text-slate-500">
@@ -136,7 +167,11 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
                       key={backup.name}
                       className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors"
                     >
-                      <div className="flex-1 min-w-0">
+                      <div 
+                        className="flex-1 min-w-0 cursor-pointer"
+                        onClick={() => setPreviewBackup(backup.name)}
+                        data-testid={`backup-preview-${backup.name}`}
+                      >
                         <div className="flex items-center gap-2 mb-1">
                           <Clock className="h-4 w-4 text-slate-400" />
                           <span className="font-medium text-slate-900">
@@ -147,6 +182,10 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
                               Latest
                             </Badge>
                           )}
+                          <Badge variant="outline" className="text-xs text-blue-600">
+                            <Eye className="h-3 w-3 mr-1" />
+                            Click to preview
+                          </Badge>
                         </div>
                         <div className="text-sm text-slate-500">
                           {getRelativeTime(backup.createdAt)} • {formatFileSize(backup.size)}
@@ -161,6 +200,7 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
                         onClick={() => restoreMutation.mutate(backup.name)}
                         disabled={restoreMutation.isPending}
                         className="ml-4"
+                        data-testid={`button-restore-${backup.name}`}
                       >
                         <RotateCcw className="h-4 w-4 mr-1" />
                         Restore
@@ -180,6 +220,71 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
           </Button>
         </div>
       </DialogContent>
+
+      {/* Backup Preview Dialog */}
+      <Dialog open={!!previewBackup} onOpenChange={() => setPreviewBackup(null)}>
+        <DialogContent className="max-w-4xl h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5" />
+              Preview: {previewBackup}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="flex-1 min-h-0">
+            {previewLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="text-slate-500">Loading backup content...</div>
+              </div>
+            ) : previewData ? (
+              <div className="h-full flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="text-sm text-slate-500">
+                    {formatFileSize(previewData.size)} • {formatDate(previewData.createdAt)}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(previewData.raw)}
+                    data-testid="button-copy-backup"
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy
+                  </Button>
+                </div>
+                <ScrollArea className="flex-1 border rounded-lg">
+                  <pre className="p-4 text-sm font-mono whitespace-pre-wrap">
+                    {previewData.raw}
+                  </pre>
+                </ScrollArea>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-slate-500">
+                Failed to load backup content
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={() => setPreviewBackup(null)}>
+              Close Preview
+            </Button>
+            {previewData && previewBackup && (
+              <Button
+                onClick={() => {
+                  restoreMutation.mutate(previewBackup);
+                  setPreviewBackup(null);
+                }}
+                disabled={restoreMutation.isPending}
+                data-testid="button-restore-from-preview"
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                {restoreMutation.isPending ? "Restoring..." : "Restore This Backup"}
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }
