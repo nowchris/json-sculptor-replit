@@ -124,104 +124,106 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      setIsOpen(open);
-      if (!open) setPreviewBackup(null); // Reset preview when main modal closes
-    }}>
-      <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="flex-1" 
-          disabled={!selectedFileName}
-        >
-          <History className="h-4 w-4 mr-1" />
-          Backups
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl h-[80vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <History className="h-5 w-5" />
-            Backups for {selectedFileName}
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="flex-1 min-h-0">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="text-slate-500">Loading backups...</div>
-            </div>
-          ) : (
-            <ScrollArea className="h-full">
-              <div className="space-y-3">
-                {backupsData?.backups.length === 0 ? (
-                  <div className="text-center py-8 text-slate-500">
-                    <FileText className="h-12 w-12 mx-auto mb-3 text-slate-300" />
-                    <p>No backups found for this file</p>
-                    <p className="text-sm">Backups are created automatically when you save changes</p>
-                  </div>
-                ) : (
-                  backupsData?.backups.map((backup, index) => (
-                    <div
-                      key={backup.name}
-                      className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors"
-                    >
-                      <div 
-                        className="flex-1 min-w-0 cursor-pointer"
-                        onClick={() => setPreviewBackup(backup.name)}
-                        data-testid={`backup-preview-${backup.name}`}
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          <Clock className="h-4 w-4 text-slate-400" />
-                          <span className="font-medium text-slate-900">
-                            {formatDate(backup.createdAt)}
-                          </span>
-                          {index === 0 && (
-                            <Badge variant="outline" className="text-xs">
-                              Latest
-                            </Badge>
-                          )}
-                          <Badge variant="outline" className="text-xs text-blue-600">
-                            <Eye className="h-3 w-3 mr-1" />
-                            Click to preview
-                          </Badge>
-                        </div>
-                        <div className="text-sm text-slate-500">
-                          {getRelativeTime(backup.createdAt)} • {formatFileSize(backup.size)}
-                        </div>
-                        <div className="text-xs text-slate-400 font-mono">
-                          {backup.name}
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => restoreMutation.mutate(backup.name)}
-                        disabled={restoreMutation.isPending}
-                        className="ml-4"
-                        data-testid={`button-restore-${backup.name}`}
-                      >
-                        <RotateCcw className="h-4 w-4 mr-1" />
-                        Restore
-                      </Button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </ScrollArea>
-          )}
-        </div>
-
-        <div className="flex justify-end pt-4 border-t">
-          <Button variant="outline" onClick={() => setIsOpen(false)}>
-            <X className="h-4 w-4 mr-1" />
-            Close
+    <>
+      <Dialog open={isOpen} onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) setPreviewBackup(null); // Reset preview when main modal closes
+      }}>
+        <DialogTrigger asChild>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex-1" 
+            disabled={!selectedFileName}
+          >
+            <History className="h-4 w-4 mr-1" />
+            Backups
           </Button>
-        </div>
-      </DialogContent>
+        </DialogTrigger>
+        <DialogContent className="max-w-2xl h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <History className="h-5 w-5" />
+              Backups for {selectedFileName}
+            </DialogTitle>
+          </DialogHeader>
 
-      {/* Backup Preview Dialog */}
+          <div className="flex-1 min-h-0">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="text-slate-500">Loading backups...</div>
+              </div>
+            ) : (
+              <ScrollArea className="h-full">
+                <div className="space-y-3">
+                  {backupsData?.backups.length === 0 ? (
+                    <div className="text-center py-8 text-slate-500">
+                      <FileText className="h-12 w-12 mx-auto mb-3 text-slate-300" />
+                      <p>No backups found for this file</p>
+                      <p className="text-sm">Backups are created automatically when you save changes</p>
+                    </div>
+                  ) : (
+                    backupsData?.backups.map((backup, index) => (
+                      <div
+                        key={backup.name}
+                        className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors"
+                      >
+                        <div 
+                          className="flex-1 min-w-0 cursor-pointer"
+                          onClick={() => setPreviewBackup(backup.name)}
+                          data-testid={`backup-preview-${backup.name}`}
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <Clock className="h-4 w-4 text-slate-400" />
+                            <span className="font-medium text-slate-900">
+                              {formatDate(backup.createdAt)}
+                            </span>
+                            {index === 0 && (
+                              <Badge variant="outline" className="text-xs">
+                                Latest
+                              </Badge>
+                            )}
+                            <Badge variant="outline" className="text-xs text-blue-600">
+                              <Eye className="h-3 w-3 mr-1" />
+                              Click to preview
+                            </Badge>
+                          </div>
+                          <div className="text-sm text-slate-500">
+                            {getRelativeTime(backup.createdAt)} • {formatFileSize(backup.size)}
+                          </div>
+                          <div className="text-xs text-slate-400 font-mono">
+                            {backup.name}
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => restoreMutation.mutate(backup.name)}
+                          disabled={restoreMutation.isPending}
+                          className="ml-4"
+                          data-testid={`button-restore-${backup.name}`}
+                        >
+                          <RotateCcw className="h-4 w-4 mr-1" />
+                          Restore
+                        </Button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
+
+          <div className="flex justify-end pt-4 border-t">
+            <Button variant="outline" onClick={() => setIsOpen(false)}>
+              <X className="h-4 w-4 mr-1" />
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Backup Preview Dialog - Separate from main dialog to avoid nesting issues */}
       <Dialog open={!!previewBackup} onOpenChange={() => setPreviewBackup(null)}>
         <DialogContent className="max-w-4xl h-[80vh]">
           <DialogHeader>
@@ -285,6 +287,6 @@ export default function BackupModal({ selectedFileName, onRestore }: BackupModal
           </div>
         </DialogContent>
       </Dialog>
-    </Dialog>
+    </>
   );
 }

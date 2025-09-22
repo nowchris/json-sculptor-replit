@@ -16,6 +16,9 @@ interface JsonBlockProps {
   path?: string;
   isMarked?: boolean;
   onToggleMark?: (path: string) => void;
+  markedForDeletion?: Set<string>;
+  // Auto-expand for object-only files
+  defaultExpanded?: boolean;
 }
 
 export default function JsonBlock({
@@ -26,9 +29,13 @@ export default function JsonBlock({
   path = "",
   isMarked = false,
   onToggleMark,
+  markedForDeletion,
+  defaultExpanded = false,
 }: JsonBlockProps) {
-  // Auto-expand Content arrays, collapse others by default
-  const [isCollapsed, setIsCollapsed] = useState(name !== "Content");
+  // Auto-expand Content arrays, Root Array, and defaultExpanded items
+  const [isCollapsed, setIsCollapsed] = useState(
+    name !== "Content" && name !== "Root Array" && !defaultExpanded
+  );
   const [isRawMode, setIsRawMode] = useState(false);
   const [rawContent, setRawContent] = useState(JSON.stringify(value, null, 2));
   const { validate, validationError } = useJsonValidation();
@@ -340,14 +347,6 @@ export default function JsonBlock({
                       
                       {value
                         .map((item, index) => ({ item, index }))
-                        .sort((a, b) => {
-                          // Sort by Name field if both have it, otherwise preserve original order
-                          if (typeof a.item === "object" && a.item !== null && a.item.Name &&
-                              typeof b.item === "object" && b.item !== null && b.item.Name) {
-                            return a.item.Name.localeCompare(b.item.Name);
-                          }
-                          return a.index - b.index;
-                        })
                         .map(({ item, index }) => {
                         // Try to find a suitable display name for the object
                         let displayName = `[${index}]`;
@@ -386,10 +385,20 @@ export default function JsonBlock({
                             key={index}
                             name={displayName}
                             value={item}
+                            path={`${path}[${index}]`}
+                            isMarked={markedForDeletion?.has(`${path}[${index}]`) || false}
+                            onToggleMark={onToggleMark}
+                            markedForDeletion={markedForDeletion || undefined}
                             onChange={(newValue) =>
                               handleFieldChange(index.toString(), newValue)
                             }
-                            onDelete={() => handleFieldDelete(index.toString())}
+                            onDelete={() => {
+                              if (onToggleMark) {
+                                onToggleMark(`${path}[${index}]`);
+                              } else {
+                                handleFieldDelete(index.toString());
+                              }
+                            }}
                           />
                         );
                       })}
@@ -414,16 +423,6 @@ export default function JsonBlock({
                     return null;
                   })}
 
-                  {/* Add Field button after simple fields */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAddField}
-                    className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Field
-                  </Button>
 
                   {/* Then render complex nested objects */}
                   {Object.entries(value).map(([key, fieldValue]) => {
@@ -433,10 +432,20 @@ export default function JsonBlock({
                           key={key}
                           name={key}
                           value={fieldValue}
+                          path={`${path}.${key}`}
+                          isMarked={markedForDeletion?.has(`${path}.${key}`) || false}
+                          onToggleMark={onToggleMark}
+                          markedForDeletion={markedForDeletion || undefined}
                           onChange={(newValue) =>
                             handleFieldChange(key, newValue)
                           }
-                          onDelete={() => handleFieldDelete(key)}
+                          onDelete={() => {
+                            if (onToggleMark) {
+                              onToggleMark(`${path}.${key}`);
+                            } else {
+                              handleFieldDelete(key);
+                            }
+                          }}
                         />
                       );
                     }

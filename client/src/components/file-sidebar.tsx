@@ -1,4 +1,4 @@
-import { RefreshCw, Save, FileCode } from "lucide-react";
+import { RefreshCw, Save, FileCode, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -31,6 +31,8 @@ export default function FileSidebar({
   const handleRefresh = () => {
     queryClient.invalidateQueries({ queryKey: ["/api/files"] });
   };
+
+  //console.log("files: ", files);
 
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -110,13 +112,16 @@ export default function FileSidebar({
                   />
                   <div className="flex-1 min-w-0">
                     <div
-                      className={`font-medium truncate ${
+                      className={`font-medium truncate flex items-center gap-1 ${
                         selectedFile?.name === file.name
                           ? "text-slate-900"
                           : "text-slate-700"
                       }`}
                     >
                       {getDisplayName(file)}
+                      {file.name === 'settings.json' && (
+                        <Settings className="h-3 w-3 text-slate-400" />
+                      )}
                     </div>
                     <div className="text-xs text-slate-500">
                       {formatLastModified(file.lastModified)}

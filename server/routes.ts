@@ -8,22 +8,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/files", async (req, res) => {
     try {
       const files = await storage.listJsonFiles();
-      const settings = await storage.getSettings();
-      
-      // Enhanced file listing with settings-based titles
-      const filesWithTitles = files.map((file) => {
-        const settingsEntry = settings.entries.find(entry => entry.filename === file.name);
-        return { 
-          ...file, 
-          displayName: settingsEntry?.title || file.name,
-          url: settingsEntry?.url
+
+      // getSettings can fail or return unexpected shapes; tolerate that.
+      let settings: unknown;
+      try {
+        settings = await storage.getSettings();
+      } catch (e) {
+        // If settings file/dir doesn't exist yet, just proceed with empty entries.
+        settings = undefined;
+      }
+
+      const entries: Array<{ filename: string; title?: string; url?: string }> =
+        Array.isArray((settings as any)?.entries) ? (settings as any).entries : [];
+
+      const filesWithTitles = files.map((file: { name: string; [k: string]: any }) => {
+        const settingsEntry = entries.find(e => e.filename === file.name);
+        return {
+          ...file,
+          displayName: settingsEntry?.title ?? file.name,
+          url: settingsEntry?.url ?? null,
         };
       });
-      
+
       res.json({ files: filesWithTitles });
     } catch (error) {
-      res.status(500).json({ 
-        message: error instanceof Error ? error.message : "Failed to list files" 
+      console.error("ERROR /api/files:", error);
+      res.status(500).json({
+        message: error instanceof Error ? error.message : "Failed to list files",
       });
     }
   });

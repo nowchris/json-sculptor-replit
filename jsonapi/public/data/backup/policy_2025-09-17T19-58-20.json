@@ -3,6 +3,15 @@
   "Location": "https://www.newschool.edu/about/university-resources/policies/",
   "Content": [
     {
+      "Name": "Academic Integrit",
+      "url": "https://docs.google.com/document/d/175hXxUbLI8Jy7NEtbeoyX3Va_MQzXzgxzFUjj7hSkSU/edit",
+      "_Categories": [
+        "Students",
+        "faculty"
+      ],
+      "characterGroup": "A"
+    },
+    {
       "Name": "Academic Probation and Dismissal",
       "url": "https://www.newschool.edu/registrar/academic-policies/",
       "_Categories": [

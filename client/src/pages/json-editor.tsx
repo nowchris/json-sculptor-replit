@@ -188,11 +188,66 @@ export default function JsonEditor() {
     return obj;
   };
 
+  // Function to get display name for marked items
+  const getDisplayNameForPath = (path: string, obj: any): string => {
+    try {
+      const pathParts = path.split(/[\.\[\]]+/).filter(Boolean);
+      let current = obj;
+      
+      for (let i = 0; i < pathParts.length - 1; i++) {
+        const part = pathParts[i];
+        if (Array.isArray(current)) {
+          current = current[parseInt(part)];
+        } else if (typeof current === 'object' && current !== null) {
+          current = current[part];
+        }
+      }
+      
+      if (Array.isArray(current)) {
+        const index = parseInt(pathParts[pathParts.length - 1]);
+        const item = current[index];
+        if (typeof item === 'object' && item !== null) {
+          // Look for name fields
+          const nameFields = ['Name', 'name', 'Title', 'title', 'username', 'email', 'label', 'displayName'];
+          for (const field of nameFields) {
+            if (item[field] && typeof item[field] === 'string') {
+              return item[field];
+            }
+          }
+          // Fallback to ID
+          if (item.id !== undefined) {
+            return `ID: ${item.id}`;
+          }
+        }
+        return `Item ${index + 1}`;
+      } else {
+        return pathParts[pathParts.length - 1] || 'Unknown item';
+      }
+    } catch {
+      return 'Unknown item';
+    }
+  };
+
   const handleSave = () => {
     // Check if any items are marked for deletion
     if (markedForDeletion.size > 0) {
+      let parsed;
+      try {
+        parsed = JSON.parse(rawContent);
+      } catch {
+        parsed = jsonContent;
+      }
+      
+      const itemNames = Array.from(markedForDeletion).map(path => 
+        getDisplayNameForPath(path, parsed)
+      );
+      
+      const itemList = itemNames.length <= 3 
+        ? itemNames.map(name => `"${name}"`).join(', ')
+        : `${itemNames.slice(0, 3).map(name => `"${name}"`).join(', ')} and ${itemNames.length - 3} more`;
+      
       const confirmed = window.confirm(
-        `Are you sure you'd like to delete ${markedForDeletion.size} object(s)? This is irreversible.`
+        `Are you sure you'd like to delete ${itemList}? This is irreversible.`
       );
       if (!confirmed) {
         return;
@@ -378,14 +433,14 @@ export default function JsonEditor() {
                             path={key}
                             isMarked={markedForDeletion.has(key)}
                             onToggleMark={toggleMarkForDeletion}
+                            markedForDeletion={markedForDeletion}
+                            defaultExpanded={true}
                             onChange={(newValue) => {
                               const newContent = { ...jsonContent, [key]: newValue };
                               handleJsonChange(newContent);
                             }}
                             onDelete={() => {
-                              const newContent = { ...jsonContent };
-                              delete newContent[key];
-                              handleJsonChange(newContent);
+                              toggleMarkForDeletion(key);
                             }}
                           />
                         ))
@@ -397,8 +452,9 @@ export default function JsonEditor() {
                         path="root"
                         isMarked={markedForDeletion.has("root")}
                         onToggleMark={toggleMarkForDeletion}
+                        markedForDeletion={markedForDeletion}
                         onChange={handleJsonChange}
-                        onDelete={() => handleJsonChange([])}
+                        onDelete={() => toggleMarkForDeletion("root")}
                       />
                     ) : (
                       <div className="p-6 bg-slate-50 rounded-lg border border-slate-200">
